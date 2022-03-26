@@ -1,53 +1,49 @@
 import { useCallback, useMemo, useState } from 'react';
 import api from '../api/api';
-import {
-  CustomerList,
-  Customers,
-  CustomresContextData,
-} from '../context/CustomersContext';
+import { BrandList, Brands, BrandsContextData } from '../context/BrandsContext';
 
-export const useCustomer = (): CustomresContextData => {
-  const [customers, setCustomers] = useState<Customers>({} as Customers);
-  const [customer, setCustomer] = useState<CustomerList>({} as CustomerList);
+export const useBrands = (): BrandsContextData => {
+  const [categoriess, setBrands] = useState<Brands>({} as Brands);
+  const [brand, setBrand] = useState<BrandList>({} as BrandList);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
-  const fetchCustomers = useCallback(async (): Promise<void> => {
+  const fetchBrands = useCallback(async (): Promise<void> => {
     await api
-      .get('/customers')
-      .then(async res => setCustomers(await res.data))
+      .get('/brands')
+      .then(res => setBrands(res.data))
       .catch(err => {
         const { message } = err.toJSON();
         setError(`Não foi possivel carregar a lista! -> ${message}`);
       })
       .finally(() => setLoading(false));
-  }, [setCustomers, setLoading]);
+  }, [setBrands, setLoading]);
 
-  const fetchFindCustomer = useCallback(
+  const fetchFindBrand = useCallback(
     async (id: string): Promise<void> => {
       if (id) {
         await api
-          .get(`/customers/${id}`)
-          .then(async res => setCustomer(await res.data))
+          .get(`/brands/${id}`)
+          .then(async res => setBrand(await res.data))
           .catch(err => {
             const { message } = err.toJSON();
             setError(`Não foi possivel carregar a lista! -> ${message}`);
           })
           .finally(() => setLoading(false));
       } else {
-        setCustomer({} as CustomerList);
+        setBrand({} as BrandList);
         setLoading(false);
       }
     },
-    [setCustomer, setLoading],
+    [setBrand, setLoading],
   );
 
-  const addCustomer = useCallback(
-    async (postCustomer: CustomerList): Promise<void> => {
+  const addBrand = useCallback(
+    async (postBrand: BrandList): Promise<void> => {
       await api
-        .post('/customers', postCustomer)
+        .post('/brands', postBrand)
         .finally(() => setLoading(false))
-        .then(async res => setCustomer(await res.data))
+        .then(async res => setBrand(await res.data))
         .catch(err => {
           const { message, request } = err;
           if (request) {
@@ -57,15 +53,15 @@ export const useCustomer = (): CustomresContextData => {
           // console.log('request: %O', JSON.parse(err.request.response).message);
         });
     },
-    [setCustomer, setLoading],
+    [setBrand, setLoading],
   );
 
-  const editCustomer = useCallback(
-    async (id, putCustomer): Promise<void> => {
+  const editBrand = useCallback(
+    async (id, putBrand): Promise<void> => {
       await api
-        .put(`/customers/${id}`, putCustomer)
+        .put(`/brands/${id}`, putBrand)
         .then(async res => {
-          setCustomer(await res.data);
+          setBrands(await res.data);
         })
         .catch(err => {
           const { message } = err.toJSON();
@@ -73,18 +69,18 @@ export const useCustomer = (): CustomresContextData => {
         })
         .finally(() => setLoading(false));
     },
-    [setCustomer, setLoading],
+    [setBrand, setLoading],
   );
 
-  const delCustomer = useCallback(
-    async (id: string): Promise<void> => {
+  const delBrand = useCallback(
+    async (id: string) => {
       if (!confirm('Deseja realmente excluir?')) return;
 
       await api
-        .delete(`/customers/${id}`)
+        .delete(`/brands/${id}`)
         .then(async () => {
-          const newCustomers = customers.data.filter(item => item.id !== id);
-          setCustomers({ ...customers, ...{ ['data']: newCustomers } });
+          const newBrands = brands.data.filter(item => item.id !== id);
+          setBrands({ ...brands, ...{ ['data']: newBrands } });
         })
         .catch(err => {
           const { message } = err.toJSON();
@@ -92,31 +88,31 @@ export const useCustomer = (): CustomresContextData => {
         })
         .finally(() => setLoading(false));
     },
-    [customers, setCustomers, setLoading],
+    [brands, setBrands],
   );
 
   return useMemo(
     () => ({
       error,
       loading,
-      customers,
-      customer,
-      fetchCustomers,
-      fetchFindCustomer,
-      addCustomer,
-      editCustomer,
-      delCustomer,
+      brands,
+      brand,
+      fetchBrands,
+      fetchFindBrand,
+      addBrand,
+      editBrand,
+      delBrand,
     }),
     [
       error,
       loading,
-      customers,
-      customer,
-      fetchCustomers,
-      fetchFindCustomer,
-      addCustomer,
-      editCustomer,
-      delCustomer,
+      brands,
+      brand,
+      fetchBrands,
+      fetchFindBrand,
+      addBrand,
+      editBrand,
+      delBrand,
     ],
   );
 };

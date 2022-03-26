@@ -1,53 +1,53 @@
 import { useCallback, useMemo, useState } from 'react';
 import api from '../api/api';
 import {
-  CustomerList,
-  Customers,
-  CustomresContextData,
-} from '../context/CustomersContext';
+  ProductList,
+  Products,
+  ProductsContextData,
+} from '../context/ProductsContext';
 
-export const useCustomer = (): CustomresContextData => {
-  const [customers, setCustomers] = useState<Customers>({} as Customers);
-  const [customer, setCustomer] = useState<CustomerList>({} as CustomerList);
+export const useProducts = (): ProductsContextData => {
+  const [products, setProducts] = useState<Products>({} as Products);
+  const [product, setProduct] = useState<ProductList>({} as ProductList);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
-  const fetchCustomers = useCallback(async (): Promise<void> => {
+  const fetchProducts = useCallback(async (): Promise<void> => {
     await api
-      .get('/customers')
-      .then(async res => setCustomers(await res.data))
+      .get('/products')
+      .then(async res => setProducts(await res.data))
       .catch(err => {
         const { message } = err.toJSON();
         setError(`Não foi possivel carregar a lista! -> ${message}`);
       })
       .finally(() => setLoading(false));
-  }, [setCustomers, setLoading]);
+  }, [setProducts, setLoading]);
 
-  const fetchFindCustomer = useCallback(
+  const fetchFindProduct = useCallback(
     async (id: string): Promise<void> => {
       if (id) {
         await api
-          .get(`/customers/${id}`)
-          .then(async res => setCustomer(await res.data))
+          .get(`/products/${id}`)
+          .then(async res => setProduct(await res.data))
           .catch(err => {
             const { message } = err.toJSON();
             setError(`Não foi possivel carregar a lista! -> ${message}`);
           })
           .finally(() => setLoading(false));
       } else {
-        setCustomer({} as CustomerList);
+        setProduct({} as ProductList);
         setLoading(false);
       }
     },
-    [setCustomer, setLoading],
+    [setProduct, setLoading],
   );
 
-  const addCustomer = useCallback(
-    async (postCustomer: CustomerList): Promise<void> => {
+  const addProduct = useCallback(
+    async (postProduct: ProductList): Promise<void> => {
       await api
-        .post('/customers', postCustomer)
+        .post('/products', postProduct)
         .finally(() => setLoading(false))
-        .then(async res => setCustomer(await res.data))
+        .then(async res => setProduct(await res.data))
         .catch(err => {
           const { message, request } = err;
           if (request) {
@@ -57,15 +57,15 @@ export const useCustomer = (): CustomresContextData => {
           // console.log('request: %O', JSON.parse(err.request.response).message);
         });
     },
-    [setCustomer, setLoading],
+    [setProduct, setLoading],
   );
 
-  const editCustomer = useCallback(
-    async (id, putCustomer): Promise<void> => {
+  const editProduct = useCallback(
+    async (id, putProduct): Promise<void> => {
       await api
-        .put(`/customers/${id}`, putCustomer)
+        .put(`/products/${id}`, putProduct)
         .then(async res => {
-          setCustomer(await res.data);
+          setProducts(await res.data);
         })
         .catch(err => {
           const { message } = err.toJSON();
@@ -73,18 +73,18 @@ export const useCustomer = (): CustomresContextData => {
         })
         .finally(() => setLoading(false));
     },
-    [setCustomer, setLoading],
+    [setProduct, setLoading],
   );
 
-  const delCustomer = useCallback(
+  const delProduct = useCallback(
     async (id: string): Promise<void> => {
       if (!confirm('Deseja realmente excluir?')) return;
 
       await api
-        .delete(`/customers/${id}`)
+        .delete(`/products/${id}`)
         .then(async () => {
-          const newCustomers = customers.data.filter(item => item.id !== id);
-          setCustomers({ ...customers, ...{ ['data']: newCustomers } });
+          const newProducts = products.data.filter(item => item.id !== id);
+          setProducts({ ...products, ...{ ['data']: newProducts } });
         })
         .catch(err => {
           const { message } = err.toJSON();
@@ -92,31 +92,31 @@ export const useCustomer = (): CustomresContextData => {
         })
         .finally(() => setLoading(false));
     },
-    [customers, setCustomers, setLoading],
+    [products, setProducts, setLoading],
   );
 
   return useMemo(
     () => ({
       error,
       loading,
-      customers,
-      customer,
-      fetchCustomers,
-      fetchFindCustomer,
-      addCustomer,
-      editCustomer,
-      delCustomer,
+      products,
+      product,
+      fetchProducts,
+      fetchFindProduct,
+      addProduct,
+      editProduct,
+      delProduct,
     }),
     [
       error,
       loading,
-      customers,
-      customer,
-      fetchCustomers,
-      fetchFindCustomer,
-      addCustomer,
-      editCustomer,
-      delCustomer,
+      products,
+      product,
+      fetchProducts,
+      fetchFindProduct,
+      addProduct,
+      editProduct,
+      delProduct,
     ],
   );
 };
