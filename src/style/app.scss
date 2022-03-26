@@ -9,6 +9,12 @@ $fa-font-path: './fontawesome-6.0.0/webfonts';
   --color3: #3685b5;
   --color4: #89aae6;
   --color5: #ac80a0;
+
+  --default: #eee;
+  --info: #c6d4e1;
+  --success: #58ce74;
+  --warning: #dceb5b;
+  --danger: #bf2a23;
 }
 
 *,
@@ -131,7 +137,9 @@ body {
       margin-bottom: 3px;
       font-weight: bold;
     }
-    input {
+    input,
+    select,
+    textarea {
       outline: none;
       border: solid 1px #cecef1;
       border-radius: 6px;
