@@ -1,21 +1,25 @@
 import { useEffect } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useParams, useNavigate, useLocation } from 'react-router-dom';
 import { useCustomer } from '../../hooks/useCustomers';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { CustomerList } from '../../context/CustomersContext';
 import { useLocalStorage } from '../../hooks/useStorage';
 import { toast } from 'react-toastify';
-import { TextError } from '../../components/TextError';
+import { Alert } from '../../components/Alert';
 import { Loading } from '../../components/Loading';
 
 export function CustomersForm() {
   const { id } = useParams<string>();
 
+  const { pathname } = useLocation();
+
+  const navigate = useNavigate();
+
   const customerId: string = id !== undefined ? id : '';
 
   // Similar to useState but first arg is key to the value in local storage.
   const [storage, setStorage] = useLocalStorage(
-    `@customers${customerId}`,
+    `@customers`,
     {} as CustomerList,
   );
 
@@ -39,10 +43,12 @@ export function CustomersForm() {
   }, [customerId]);
 
   useEffect(() => {
+    const url = pathname.split('/');
     if (customer.id) {
-      console.log(storage);
-
-      return setStorage(customer);
+      setStorage(customer);
+      if (url[url.length - 1] === 'new') {
+        navigate(`/customers/${customer.id}/edit`);
+      }
     }
   }, [customer]);
 
@@ -65,7 +71,10 @@ export function CustomersForm() {
     <Loading />
   ) : (
     <div className="content">
-      {error ? <TextError text={error} /> : null}
+      <Alert severity="success" onClose>
+        tesgdfsgfdg fdgafg
+      </Alert>
+      {error ? <Alert severity="default">{error}</Alert> : null}
       <div className="help-buttons-flex">
         <h1>Clientes {storage.first_name}</h1>
         <span>
@@ -124,21 +133,24 @@ export function CustomersForm() {
           />
           <small>{errors.email && 'Campo obrigatório!'}</small>
         </div>
-        <div className="form-input" style={{ width: 420 }}>
-          <label htmlFor="password">Senha</label>
-          <input
-            type="password"
-            {...register('password', {
-              required: true,
-            })}
-            className={errors.password && 'input-invalid'}
-            // defaultValue={storage.password}
-            onChange={e =>
-              setStorage({ ...storage, ['password']: e.target.value })
-            }
-          />
-          <small>{errors.password && 'Campo obrigatório!'}</small>
-        </div>
+
+        {!customer.id && (
+          <div className="form-input" style={{ width: 420 }}>
+            <label htmlFor="password">Senha *</label>
+            <input
+              type="password"
+              {...register('password', {
+                required: true,
+              })}
+              className={errors.password && 'input-invalid'}
+              onChange={e =>
+                setStorage({ ...storage, ['password']: e.target.value })
+              }
+            />
+            <small>{errors.password && 'Campo obrigatório!'}</small>
+          </div>
+        )}
+
         <div className="form-input">
           <label htmlFor="cpf">CPF *</label>
           <input

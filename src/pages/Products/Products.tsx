@@ -1,20 +1,16 @@
 import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Loading } from '../../components/Loading';
-import { CustomerList } from '../../context/CustomersContext';
-import { useCustomer } from '../../hooks/useCustomers';
+import { ProductList } from '../../context/ProductsContext';
+import { useProducts } from '../../hooks/useProducts';
 import { useLocalStorage } from '../../hooks/useStorage';
 
-export function Customers() {
-  const { customers, loading, error, fetchCustomers, delCustomer } =
-    useCustomer();
-
-  // Similar to useState but first arg is key to the value in local storage.
-  const [, setStorage] = useLocalStorage(`@customers`, {} as CustomerList);
-
+export function Products() {
+  const { products, loading, error, fetchProducts, delProduct } = useProducts();
+  const [, setStorage] = useLocalStorage(`@products`, {} as ProductList);
   useEffect(() => {
-    fetchCustomers();
-  }, [fetchCustomers]);
+    fetchProducts();
+  }, [fetchProducts]);
 
   return loading ? (
     <Loading />
@@ -23,11 +19,11 @@ export function Customers() {
   ) : (
     <div className="content">
       <div className="help-buttons-flex">
-        <h1>Clientes</h1>
+        <h1>Produtos</h1>
         <Link
-          to="/customers/new"
+          to="/products/new"
           className="btn btn-primary"
-          onClick={() => setStorage({} as CustomerList)}
+          onClick={() => setStorage({} as ProductList)}
         >
           novo <i className="fa-solid fa-plus"></i>
         </Link>
@@ -37,18 +33,18 @@ export function Customers() {
           <span>Nome</span>
           <span>Ações</span>
         </li>
-        {customers.data.map(items => (
+        {products.data.map(items => (
           <li key={items.id}>
-            <span>{items.first_name}</span>
+            <span>{items.name}</span>
             <span>
               <Link
-                to={`/customers/${items.id}/edit`}
+                to={`/products/${items.id}/edit`}
                 className="btn btn-default"
               >
                 editar <i className="fa-solid fa-pen-to-square"></i>
               </Link>
               <span
-                onClick={() => delCustomer(items.id)}
+                onClick={() => delProduct(items.id)}
                 className="btn btn-danger"
               >
                 excluir <i className="fa-solid fa-trash"></i>
