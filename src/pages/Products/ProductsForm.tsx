@@ -1,13 +1,12 @@
 import { ChangeEvent, useEffect, useState } from 'react';
 import { Link, useParams, useNavigate, useLocation } from 'react-router-dom';
 import { useForm, SubmitHandler } from 'react-hook-form';
-import { useLocalStorage } from '../../hooks/useStorage';
-import { toast } from 'react-toastify';
-import { Alert } from '../../components/Alert';
 import { Loading } from '../../components/Loading';
-import { ProductList } from '../../context/ProductsContext';
+import { IProductItems } from '../../context/ProductsContext';
 import { useProducts } from '../../hooks/useProducts';
 import { useBrands } from '../../hooks/useBrands';
+import { toast } from 'react-toastify';
+import { useCategories } from '../../hooks/useCategories';
 
 export function ProductsForm() {
   const { id } = useParams<string>();
@@ -17,35 +16,33 @@ export function ProductsForm() {
   const navigate = useNavigate();
 
   const [resolveSelectBrand, setResolveSelectBrand] = useState<string>('');
+  const [resolveSelectCategory, setResolveSelectCategory] =
+    useState<string>('');
 
   const productId: string = id !== undefined ? id : '';
 
-  // Similar to useState but first arg is key to the value in local storage.
-  const [storage, setStorage] = useLocalStorage(`@products`, {} as ProductList);
-
   const {
+    reset,
     register,
     handleSubmit,
+    setValue,
     formState: { errors },
-  } = useForm<ProductList>({ defaultValues: undefined });
+  } = useForm<IProductItems>({ defaultValues: {} as IProductItems });
 
-  const { product, loading, error, fetchFindProduct, editProduct, addProduct } =
+  const { brandsAll: brandsAll, loading: loadBrands } = useBrands();
+  const { categories: categoriesAll, loading: loadCategory } = useCategories();
+
+  const { product, loading, findProducts, editProduct, addProduct } =
     useProducts();
 
-  const { fetchBrands, brands } = useBrands();
-
   useEffect(() => {
-    fetchBrands();
+    findProducts(productId);
   }, []);
-
-  useEffect(() => {
-    fetchFindProduct(productId);
-  }, [productId]);
 
   useEffect(() => {
     const url = pathname.split('/');
     if (product.id) {
-      setStorage(product);
+      reset(product);
       if (url[url.length - 1] === 'new') {
         navigate(`/products/${product.id}/edit`);
       }
@@ -53,15 +50,38 @@ export function ProductsForm() {
   }, [product]);
 
   useEffect(() => {
-    const brandSelect = brands.data?.find(
-      item => item.id === storage.brands_id,
-    );
+    const brandSelect = brandsAll.find(item => item.id === product.brands_id);
     if (brandSelect !== undefined) {
       setResolveSelectBrand(brandSelect.name);
     }
-  }, [brands, storage]);
+  }, [brandsAll, product]);
 
-  const onSubmit: SubmitHandler<ProductList> = async data => {
+  const onResolveChangeBrands = (event: ChangeEvent<HTMLInputElement>) => {
+    const { value } = event.target;
+    const brandResolve = brandsAll.find(item => item.name === value);
+    if (brandResolve !== undefined) {
+      setValue('brands_id', brandResolve?.id);
+    }
+  };
+
+  useEffect(() => {
+    const categorySelect = categoriesAll.find(
+      item => item.id === product.categories_id,
+    );
+    if (categorySelect !== undefined) {
+      setResolveSelectCategory(categorySelect.name);
+    }
+  }, [categoriesAll, product]);
+
+  const onResolveChangeCategories = (event: ChangeEvent<HTMLInputElement>) => {
+    const { value } = event.target;
+    const categoryResolve = categoriesAll.find(item => item.name === value);
+    if (categoryResolve !== undefined) {
+      setValue('categories_id', categoryResolve?.id);
+    }
+  };
+
+  const onSubmit: SubmitHandler<IProductItems> = async data => {
     let promiseProducts: Promise<void> = {} as Promise<void>;
     if (product.id) {
       promiseProducts = editProduct(product.id, data);
@@ -76,28 +96,12 @@ export function ProductsForm() {
     });
   };
 
-  const onResolveChangeBrands = (event: ChangeEvent<HTMLInputElement>) => {
-    const { value } = event.target;
-    const brandResolve = brands.data.find(item => item.name === value);
-    if (brandResolve !== undefined) {
-      setStorage({
-        ...storage,
-        ['brands_id']: brandResolve.id,
-      });
-    }
-  };
-
   return loading ? (
     <Loading />
   ) : (
     <div className="content">
-      {error ? (
-        <Alert onClose severity="warning">
-          {error}
-        </Alert>
-      ) : null}
       <div className="help-buttons-flex">
-        <h1>Produto {storage.name}</h1>
+        <h1>Produto {product.name}</h1>
         <span>
           <Link to="/products" className="btn btn-default">
             voltar <i className="fa-solid fa-undo"></i>
@@ -118,20 +122,12 @@ export function ProductsForm() {
             type="text"
             {...register('name', { required: true })}
             className={errors.name && 'input-invalid'}
-            defaultValue={storage.name}
-            onChange={e => setStorage({ ...storage, ['name']: e.target.value })}
           />
           <small>{errors.name && 'Campo obrigatório!'}</small>
         </div>
         <div className="form-input" style={{ width: 175 }}>
           <label htmlFor="name">Em Estoque</label>
-          <input
-            readOnly
-            type="text"
-            onChange={e =>
-              setStorage({ ...storage, ['in_stock']: e.target.value })
-            }
-          />
+          <input readOnly type="text" />
         </div>
 
         <div style={{ width: '100%' }} />
@@ -145,53 +141,55 @@ export function ProductsForm() {
             type="search"
           />
           <datalist id="search_fakebrands_id">
-            {brands.data?.map(brand => (
-              <option value={brand.name} key={brand.id} />
-            ))}
+            {brandsAll &&
+              brandsAll.map(brand => (
+                <option value={brand.name} key={brand.id} />
+              ))}
           </datalist>
-          {/* <label htmlFor="brands_id">Marcas *</label>
-          <select
-            {...register('brands_id', { required: false })}
-            className={errors.brands_id && 'input-invalid'}
-            defaultValue={storage.brands_id || ''}
-            onChange={e =>
-              setStorage({ ...storage, ['brands_id']: e.target.value })
-            }
-          >
-            <option value="null">Selecione uma marca</option>
-          </select>
-          <small>{errors.brands_id && 'Campo obrigatório!'}</small> */}
+
+          <small>{errors.brands_id && 'Campo obrigatório!'}</small>
         </div>
 
-        {/* <div className="form-input" style={{ width: 320 }}>
-          <label htmlFor="categories_id">Categoria *</label>
-          <select
-            {...register('categories_id', { required: false })}
-            className={errors.categories_id && 'input-invalid'}
-            defaultValue={storage.categories_id || ''}
-            onChange={e =>
-              setStorage({ ...storage, ['categories_id']: e.target.value })
-            }
-          >
-            <option value="">Selecione uma Categoria</option>
-          </select>
-          <small>{errors.categories_id && 'Campo obrigatório!'}</small>
-        </div> */}
+        <div className="form-input" style={{ width: 320 }}>
+          <label htmlFor="fakecategory_id">Categorias *</label>
+          <input
+            list="search_fakecategory_id"
+            name="fakecategory_id"
+            onChange={onResolveChangeCategories}
+            defaultValue={resolveSelectCategory}
+            type="search"
+          />
+          <datalist id="search_fakecategory_id">
+            {categoriesAll &&
+              categoriesAll.map(category => (
+                <option value={category.name} key={category.id} />
+              ))}
+          </datalist>
+
+          <small>{errors.brands_id && 'Campo obrigatório!'}</small>
+        </div>
 
         <div className="form-input" style={{ width: '100%' }}>
           <label htmlFor="description">Descrição</label>
           <input
-            type="description"
+            type="text"
             {...register('description', {
               required: false,
             })}
             className={errors.description && 'input-invalid'}
-            defaultValue={storage.description}
-            onChange={e =>
-              setStorage({ ...storage, ['description']: e.target.value })
-            }
           />
           <small>{errors.description && 'Campo obrigatório!'}</small>
+        </div>
+        <div className="form-input" style={{ width: '100%' }}>
+          <label htmlFor="description">Descrição Texto</label>
+          <input
+            type="text"
+            {...register('description_text', {
+              required: false,
+            })}
+            className={errors.description_text && 'input-invalid'}
+          />
+          <small>{errors.description_text && 'Campo obrigatório!'}</small>
         </div>
       </form>
     </div>

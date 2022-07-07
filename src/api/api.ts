@@ -14,6 +14,19 @@ const api = axios.create({
 //   return config;
 // });
 
+// api.interceptors.response.use(
+//   req => {
+//     return req;
+//   },
+//   err => {
+//     const { message, status } = err.toJSON();
+//     console.log(
+//       `Não foi possivel carregar a lista! -> ${message}`,
+//       err.toJSON(),
+//     );
+//   },
+// );
+
 // api.interceptors.request.use(
 //   req => {
 //     return req;

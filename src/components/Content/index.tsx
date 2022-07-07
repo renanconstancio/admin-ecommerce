@@ -1,11 +1,10 @@
 import './style.scss';
+import { Outlet } from 'react-router';
 
-import { ReactChild, ReactChildren } from 'react';
-
-interface ContentProps {
-  children: ReactChild | ReactChildren;
-}
-
-export function Content({ children }: ContentProps) {
-  return <section className="content">{children}</section>;
+export function Content() {
+  return (
+    <section className="content">
+      <Outlet />
+    </section>
+  );
 }

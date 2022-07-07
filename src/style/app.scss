@@ -93,6 +93,16 @@ body {
       background-color: var(--color3);
     }
   }
+
+  &.btn-danger {
+    color: #fff;
+    background-color: var(--danger);
+    &:focus,
+    &:hover,
+    &:active {
+      background-color: var(--danger);
+    }
+  }
 }
 
 .ul-content-list {

@@ -1,12 +1,10 @@
 import { useEffect } from 'react';
 import { Link, useParams, useNavigate, useLocation } from 'react-router-dom';
 import { useForm, SubmitHandler } from 'react-hook-form';
-import { useLocalStorage } from '../../hooks/useStorage';
-import { toast } from 'react-toastify';
-import { Alert } from '../../components/Alert';
-import { Loading } from '../../components/Loading';
-import { BrandList } from '../../context/BrandsContext';
 import { useBrands } from '../../hooks/useBrands';
+import { price } from '../../utils';
+import { IBrandItems } from '../../context/BrandsContext';
+import { toast } from 'react-toastify';
 
 export function BrandsForm() {
   const { id } = useParams<string>();
@@ -17,38 +15,52 @@ export function BrandsForm() {
 
   const brandId: string = id !== undefined ? id : '';
 
-  // Similar to useState but first arg is key to the value in local storage.
-  const [storage, setStorage] = useLocalStorage(`@brands`, {} as BrandList);
-
   const {
+    reset,
+    setValue,
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<BrandList>();
+  } = useForm<IBrandItems>({
+    defaultValues: {} as IBrandItems,
+    mode: 'onChange',
+  });
 
-  const { brand, loading, error, fetchFindBrand, editBrand, addBrand } =
-    useBrands();
+  const { brand, loading, findBrand, editBrand, addBrand } = useBrands();
 
   useEffect(() => {
-    fetchFindBrand(brandId);
+    findBrand(brandId);
   }, [brandId]);
 
   useEffect(() => {
     const url = pathname.split('/');
     if (brand.id) {
-      setStorage(brand);
+      reset(brand);
       if (url[url.length - 1] === 'new') {
         navigate(`/brands/${brand.id}/edit`);
       }
     }
   }, [brand]);
 
-  const onSubmit: SubmitHandler<BrandList> = async data => {
+  const onSubmit: SubmitHandler<IBrandItems> = async data => {
     let promiseBrands: Promise<void> = {} as Promise<void>;
+    const { name, description, discount_value, discount_type, actived } = data;
     if (brand.id) {
-      promiseBrands = editBrand(brand.id, data);
+      promiseBrands = editBrand(brand.id, {
+        name,
+        description,
+        discount_value,
+        discount_type,
+        actived,
+      });
     } else {
-      promiseBrands = addBrand(data);
+      promiseBrands = addBrand({
+        name,
+        description,
+        discount_value,
+        discount_type,
+        actived,
+      });
     }
 
     toast.promise(promiseBrands, {
@@ -58,17 +70,10 @@ export function BrandsForm() {
     });
   };
 
-  return loading ? (
-    <Loading />
-  ) : (
+  return (
     <div className="content">
-      {error ? (
-        <Alert onClose severity="warning">
-          {error}
-        </Alert>
-      ) : null}
       <div className="help-buttons-flex">
-        <h1>{storage.name}</h1>
+        <h1>{brand?.name}</h1>
         <span>
           <Link to="/brands" className="btn btn-default">
             voltar <i className="fa-solid fa-undo"></i>
@@ -92,12 +97,10 @@ export function BrandsForm() {
           <label htmlFor="name">Nome *</label>
           <input
             type="text"
-            {...register('name', { required: true })}
+            {...register('name', { required: 'Campo obrigatório!' })}
             className={errors.name && 'input-invalid'}
-            defaultValue={storage.name}
-            onChange={e => setStorage({ ...storage, ['name']: e.target.value })}
           />
-          <small>{errors.name && 'Campo obrigatório!'}</small>
+          <small>{errors.name && errors.name.message}</small>
         </div>
 
         <div style={{ width: '100%' }} />
@@ -106,10 +109,6 @@ export function BrandsForm() {
           <select
             {...register('actived', { required: false })}
             className={errors.actived && 'input-invalid'}
-            defaultValue={storage.actived || 'yes'}
-            onChange={e =>
-              setStorage({ ...storage, ['actived']: e.target.value })
-            }
           >
             <option value="no">Não</option>
             <option value="yes">Sim</option>
@@ -121,10 +120,6 @@ export function BrandsForm() {
           <select
             {...register('discount_type', { required: false })}
             className={errors.discount_type && 'input-invalid'}
-            defaultValue={storage.discount_type || '$'}
-            onChange={e =>
-              setStorage({ ...storage, ['discount_type']: e.target.value })
-            }
           >
             <option value="$">Em Real</option>
             <option value="%">Em Porcentagem</option>
@@ -140,11 +135,11 @@ export function BrandsForm() {
               required: false,
             })}
             className={errors.discount_value && 'input-invalid'}
-            value={storage.discount_value || 0.0}
             onChange={e =>
-              setStorage({ ...storage, ['discount_value']: e.target.value })
+              setValue('discount_value', price(e.currentTarget.value))
             }
           />
+
           <small>{errors.discount_value && 'Campo obrigatório!'}</small>
         </div>
 
@@ -156,10 +151,6 @@ export function BrandsForm() {
               required: false,
             })}
             className={errors.description && 'input-invalid'}
-            defaultValue={storage.description}
-            onChange={e =>
-              setStorage({ ...storage, ['description']: e.target.value })
-            }
           />
           <small>{errors.description && 'Campo obrigatório!'}</small>
         </div>

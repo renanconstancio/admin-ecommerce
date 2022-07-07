@@ -1,30 +1,28 @@
 import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Loading } from '../../components/Loading';
-import { ProductList } from '../../context/ProductsContext';
+import { useError } from '../../hooks/useError';
 import { useProducts } from '../../hooks/useProducts';
-import { useLocalStorage } from '../../hooks/useStorage';
 
 export function Products() {
-  const { products, loading, error, fetchProducts, delProduct } = useProducts();
-  const [, setStorage] = useLocalStorage(`@products`, {} as ProductList);
+  const { products, loading, fetchProducts, delProduct } = useProducts();
+  const { setError } = useError();
   useEffect(() => {
     fetchProducts();
-  }, [fetchProducts]);
+
+    setError({
+      type: 'danger',
+      message: `Não foi possivel carregar a lista!`,
+    });
+  }, []);
 
   return loading ? (
     <Loading />
-  ) : error ? (
-    <h2>{error}</h2>
   ) : (
     <div className="content">
       <div className="help-buttons-flex">
         <h1>Produtos</h1>
-        <Link
-          to="/products/new"
-          className="btn btn-primary"
-          onClick={() => setStorage({} as ProductList)}
-        >
+        <Link to="/products/new" className="btn btn-primary">
           novo <i className="fa-solid fa-plus"></i>
         </Link>
       </div>
@@ -33,7 +31,7 @@ export function Products() {
           <span>Nome</span>
           <span>Ações</span>
         </li>
-        {products.data.map(items => (
+        {products.data?.map(items => (
           <li key={items.id}>
             <span>{items.name}</span>
             <span>
@@ -44,7 +42,7 @@ export function Products() {
                 editar <i className="fa-solid fa-pen-to-square"></i>
               </Link>
               <span
-                onClick={() => delProduct(items.id)}
+                onClick={() => delProduct(`${items.id}`)}
                 className="btn btn-danger"
               >
                 excluir <i className="fa-solid fa-trash"></i>

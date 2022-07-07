@@ -2,11 +2,12 @@ import { useEffect } from 'react';
 import { Link, useParams, useNavigate, useLocation } from 'react-router-dom';
 import { useCustomer } from '../../hooks/useCustomers';
 import { useForm, SubmitHandler } from 'react-hook-form';
-import { CustomerList } from '../../context/CustomersContext';
-import { useLocalStorage } from '../../hooks/useStorage';
 import { toast } from 'react-toastify';
-import { Alert } from '../../components/Alert';
 import { Loading } from '../../components/Loading';
+import {
+  ICustomerItems,
+  ICustomerRequest,
+} from '../../context/CustomersContext';
 
 export function CustomersForm() {
   const { id } = useParams<string>();
@@ -17,47 +18,61 @@ export function CustomersForm() {
 
   const customerId: string = id !== undefined ? id : '';
 
-  // Similar to useState but first arg is key to the value in local storage.
-  const [storage, setStorage] = useLocalStorage(
-    `@customers`,
-    {} as CustomerList,
-  );
-
   const {
     register,
     handleSubmit,
+    reset,
     formState: { errors },
-  } = useForm<CustomerList>();
+  } = useForm<ICustomerItems>();
 
-  const {
-    customer,
-    loading,
-    error,
-    fetchFindCustomer,
-    addCustomer,
-    editCustomer,
-  } = useCustomer();
+  const { customer, loading, fetchFindCustomer, addCustomer, editCustomer } =
+    useCustomer();
 
   useEffect(() => {
-    fetchFindCustomer(customerId);
+    if (customerId) fetchFindCustomer(customerId);
   }, [customerId]);
 
   useEffect(() => {
     const url = pathname.split('/');
     if (customer.id) {
-      setStorage(customer);
+      reset(customer);
       if (url[url.length - 1] === 'new') {
         navigate(`/customers/${customer.id}/edit`);
       }
     }
   }, [customer]);
 
-  const onSubmit: SubmitHandler<CustomerList> = async data => {
+  const onSubmit: SubmitHandler<ICustomerRequest> = async data => {
     let promiseCustomers: Promise<void> = {} as Promise<void>;
+    const {
+      first_name,
+      last_name,
+      cpf,
+      email,
+      check_email,
+      birth_date,
+      password,
+    } = data;
     if (customer.id) {
-      promiseCustomers = editCustomer(customer.id, data);
+      promiseCustomers = editCustomer(customer.id, {
+        first_name,
+        last_name,
+        cpf,
+        email,
+        check_email,
+        birth_date,
+        password,
+      });
     } else {
-      promiseCustomers = addCustomer(data);
+      promiseCustomers = addCustomer({
+        first_name,
+        last_name,
+        cpf,
+        email,
+        check_email,
+        birth_date,
+        password,
+      });
     }
 
     toast.promise(promiseCustomers, {
@@ -71,12 +86,8 @@ export function CustomersForm() {
     <Loading />
   ) : (
     <div className="content">
-      <Alert severity="success" onClose>
-        tesgdfsgfdg fdgafg
-      </Alert>
-      {error ? <Alert severity="default">{error}</Alert> : null}
       <div className="help-buttons-flex">
-        <h1>Clientes {storage.first_name}</h1>
+        <h1>Clientes {customer.first_name}</h1>
         <span>
           <Link to="/customers" className="btn btn-default">
             voltar <i className="fa-solid fa-undo"></i>
@@ -97,10 +108,6 @@ export function CustomersForm() {
             type="text"
             {...register('first_name', { required: true })}
             className={errors.first_name && 'input-invalid'}
-            defaultValue={storage.first_name}
-            onChange={e =>
-              setStorage({ ...storage, ['first_name']: e.target.value })
-            }
           />
           <small>{errors.first_name && 'Campo obrigatório!'}</small>
         </div>
@@ -111,10 +118,6 @@ export function CustomersForm() {
             type="text"
             {...register('last_name', { required: false })}
             className={errors.last_name && 'input-invalid'}
-            defaultValue={storage.last_name}
-            onChange={e =>
-              setStorage({ ...storage, ['last_name']: e.target.value })
-            }
           />
           <small>{errors.last_name && 'Campo obrigatório!'}</small>
         </div>
@@ -126,10 +129,6 @@ export function CustomersForm() {
               required: true,
             })}
             className={errors.email && 'input-invalid'}
-            defaultValue={storage.email}
-            onChange={e =>
-              setStorage({ ...storage, ['email']: e.target.value })
-            }
           />
           <small>{errors.email && 'Campo obrigatório!'}</small>
         </div>
@@ -143,9 +142,6 @@ export function CustomersForm() {
                 required: true,
               })}
               className={errors.password && 'input-invalid'}
-              onChange={e =>
-                setStorage({ ...storage, ['password']: e.target.value })
-              }
             />
             <small>{errors.password && 'Campo obrigatório!'}</small>
           </div>
@@ -157,21 +153,12 @@ export function CustomersForm() {
             type="tel"
             {...register('cpf', { required: true })}
             className={errors.cpf && 'input-invalid'}
-            defaultValue={storage.cpf}
-            onChange={e => setStorage({ ...storage, ['cpf']: e.target.value })}
           />
           <small>{errors.cpf && 'Campo obrigatório!'}</small>
         </div>
         <div className="form-input">
           <label htmlFor="birth_date">Data Aniversário ?</label>
-          <input
-            type="date"
-            {...register('birth_date')}
-            defaultValue={storage.birth_date}
-            onChange={e =>
-              setStorage({ ...storage, ['birth_date']: e.target.value })
-            }
-          />
+          <input type="date" {...register('birth_date')} />
         </div>
       </form>
     </div>

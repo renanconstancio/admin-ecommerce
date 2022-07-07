@@ -1,5 +1,14 @@
 import ReactDOM from 'react-dom';
 
 import { App } from './App';
+import { ErrorProvider } from './context/ErrorContext';
 
-ReactDOM.render(<App />, document.getElementById('root'));
+import 'react-toastify/dist/ReactToastify.css';
+import './style/app.scss';
+
+ReactDOM.render(
+  <ErrorProvider>
+    <App />
+  </ErrorProvider>,
+  document.getElementById('root'),
+);
