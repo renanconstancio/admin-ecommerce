@@ -1,6 +1,6 @@
 export function Dashboard() {
   return (
-    <div>
+    <div className="content">
       <h1>Dashboard</h1>
     </div>
   );

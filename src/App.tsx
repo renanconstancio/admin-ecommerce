@@ -39,15 +39,18 @@ export function App() {
           <Route index element={<Products />} />
           <Route path=":id/edit" element={<ProductsForm />} />
           <Route path="new" element={<ProductsForm />} />
-        </Route>
-*/}
+        </Route> */}
+
         <Route path="/customers" element={<Content />}>
           <Route index element={<Customers />} />
           <Route path=":id/edit" element={<CustomersForm />} />
           <Route path="new" element={<CustomersForm />} />
         </Route>
 
-        <Route path="" element={<Dashboard />} />
+        <Route path="" element={<Content />}>
+          <Route index element={<Dashboard />} />
+        </Route>
+
         <Route path="*" element={<h1>ME ERROR</h1>} />
       </Routes>
       <ToastContainer />
