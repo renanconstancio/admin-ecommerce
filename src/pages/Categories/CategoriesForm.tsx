@@ -35,13 +35,15 @@ export function CategoriesForm() {
 
   useEffect(() => {
     (async () => {
-      await api.get(`/categories/${categoryId}`).then(async res =>
-        fetch({
-          category: await res.data,
-          loading: false,
-          error: '',
-        }),
-      );
+      if (categoryId) {
+        await api.get(`/categories/${categoryId}`).then(async res =>
+          fetch({
+            category: await res.data,
+            loading: false,
+            error: '',
+          }),
+        );
+      }
     })();
   }, [fetch, categoryId]);
 
@@ -56,30 +58,47 @@ export function CategoriesForm() {
   }, [category]);
 
   const onSubmit: SubmitHandler<ICategory> = async data => {
-    // let promiseBrands: Promise<void> = {} as Promise<void>;
-    // const { name, description, discount_value, discount_type, actived } = data;
-    // // if (category.id) {
-    // //   promiseBrands = editBrand(category.id, {
-    // //     name,
-    // //     description,
-    // //     discount_value,
-    // //     discount_type,
-    // //     actived,
-    // //   });
-    // // } else {
-    // //   promiseBrands = addBrand({
-    // //     name,
-    // //     description,
-    // //     discount_value,
-    // //     discount_type,
-    // //     actived,
-    // //   });
-    // // }
-    // toast.promise(promiseBrands, {
-    //   pending: 'Um momento por favor...',
-    //   success: 'Dados salvos com sucesso!',
-    //   error: 'Algo deu errado, tente novamente!',
-    // });
+    let promiseCategory: any;
+
+    const { description, keywords, name, position } = data;
+
+    if (data.id) {
+      promiseCategory = api
+        .put(`/categories/${categoryId}`, {
+          description,
+          keywords,
+          name,
+          position: Number(position),
+        })
+        .then(async res =>
+          fetch({
+            category: await res.data,
+            loading: false,
+            error: '',
+          }),
+        );
+    } else {
+      promiseCategory = api
+        .post(`/categories`, {
+          description,
+          keywords,
+          name,
+          position: Number(position),
+        })
+        .then(async res =>
+          fetch({
+            category: await res.data,
+            loading: false,
+            error: '',
+          }),
+        );
+    }
+
+    toast.promise(promiseCategory, {
+      pending: 'Um momento por favor...',
+      success: 'Dados salvos com sucesso!',
+      error: 'Algo deu errado, tente novamente!',
+    });
   };
 
   return (
@@ -105,7 +124,7 @@ export function CategoriesForm() {
         className="form-style form-category"
         id="categories"
       >
-        <div className="form-input" style={{ width: 375 }}>
+        <div className="form-input flex-4">
           <label htmlFor="name">Nome *</label>
           <input
             type="text"
@@ -114,8 +133,28 @@ export function CategoriesForm() {
           />
           <small>{errors.name && errors.name.message}</small>
         </div>
+        <div className="form-input flex-1">
+          <label htmlFor="name">Posição *</label>
+          <input
+            type="text"
+            {...register('position', { required: false })}
+            className={errors.position && 'input-invalid'}
+          />
+          <small>{errors.position && errors.position.message}</small>
+        </div>
 
-        <div className="form-input" style={{ width: '100%' }}>
+        <div className="form-input flex-7">
+          <label htmlFor="description">Keywords</label>
+          <input
+            type="keywords"
+            {...register('keywords', {
+              required: false,
+            })}
+            className={errors.keywords && 'input-invalid'}
+          />
+          <small>{errors.keywords && 'Campo obrigatório!'}</small>
+        </div>
+        <div className="form-input flex-7">
           <label htmlFor="description">Descrição</label>
           <input
             type="description"

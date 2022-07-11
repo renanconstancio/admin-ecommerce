@@ -37,6 +37,45 @@ body {
 }
 // mysql://be36541c8c933b:6e5c824a@us-cdbr-east-05.cleardb.net/heroku_2c6115001ba40a2?reconnect=true
 
+.flex {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  &-1 {
+    flex: 0 1 8.33%;
+  }
+  &-2 {
+    flex: 0 1 16.66%;
+  }
+  &-3 {
+    flex: 0 1 24.99%;
+  }
+  &-4 {
+    flex: 0 1 33.32%;
+  }
+  &-6 {
+    flex: 0 1 49.98%;
+  }
+  &-7 {
+    flex: 0 1 58.31%;
+  }
+  &-8 {
+    flex: 0 1 66.64%;
+  }
+  &-9 {
+    flex: 0 1 74.97%;
+  }
+  &-10 {
+    flex: 0 1 83.3%;
+  }
+  &-11 {
+    flex: 0 1 91.63%;
+  }
+  &-12 {
+    flex: 0 1 100%;
+  }
+}
+
 .btn {
   font-size: 14px;
   padding: 6px 12px;
