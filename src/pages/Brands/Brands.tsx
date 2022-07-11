@@ -1,14 +1,28 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Loading } from '../../components/Loading';
-import { useBrands } from '../../hooks/useBrands';
+import { IBrand, IBrands } from '../../types/Brand';
+import { IPagination } from '../../types/Pagination';
+import api from '../../api/api';
 
 export function Brands() {
-  const { brands, loading, fetchBrands, delBrand } = useBrands();
+  const [{ brand, loading }, fetch] = useState<IBrands<IPagination<IBrand>>>({
+    brand: {} as IPagination<IBrand>,
+    loading: true,
+    error: '',
+  });
 
   useEffect(() => {
-    fetchBrands();
-  }, []);
+    (async () => {
+      await api.get('/brands').then(async res =>
+        fetch({
+          brand: await res.data,
+          loading: false,
+          error: '',
+        }),
+      );
+    })();
+  }, [fetch]);
 
   return (
     <div className="content">
