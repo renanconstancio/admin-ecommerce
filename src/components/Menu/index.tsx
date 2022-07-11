@@ -27,6 +27,14 @@ export function Menu() {
             <span className="title">dashboard</span>
           </Link>
         </li>
+        <li className={handleActveLink('categories')}>
+          <Link to="/categories">
+            <span className="icon">
+              <i className="fa-solid fa-gauge"></i>
+            </span>
+            <span className="title">Categorias</span>
+          </Link>
+        </li>
         <li className={handleActveLink('brands')}>
           <Link to="/brands">
             <span className="icon">

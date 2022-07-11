@@ -13,12 +13,20 @@ import { CategoriesProvider } from './context/CategoriesContext';
 import { CustomersProvider } from './context/CustomersContext';
 import { Customers } from './pages/Customers/Customers';
 import { CustomersForm } from './pages/Customers/CustomersForm';
+import { Categories } from './pages/Categories/Categories';
+import { CategoriesForm } from './pages/Categories/CategoriesForm';
 
 export function App() {
   return (
     <BrowserRouter>
       <Menu />
       <Routes>
+        <Route path="categories" element={<Content />}>
+          <Route index element={<Categories />} />
+          <Route path=":id/edit" element={<CategoriesForm />} />
+          <Route path="new" element={<CategoriesForm />} />
+        </Route>
+
         <Route
           path="/brands"
           element={
