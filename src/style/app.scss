@@ -105,31 +105,20 @@ body {
   &.btn-default {
     color: #333;
     background-color: #fff;
-    &:focus {
-      color: #333;
-      background-color: #e6e6e6;
-    }
-    &:hover {
-      color: #333;
-      background-color: #e6e6e6;
-    }
+    &:focus,
+    &:hover,
     &:active {
-      color: #333;
-      background-color: #e6e6e6;
+      opacity: 0.7;
     }
   }
 
   &.btn-primary {
     color: #fff;
     background-color: var(--color2);
-    &:focus {
-      background-color: var(--color3);
-    }
-    &:hover {
-      background-color: var(--color3);
-    }
+    &:focus,
+    &:hover,
     &:active {
-      background-color: var(--color3);
+      opacity: 0.7;
     }
   }
 
@@ -139,7 +128,7 @@ body {
     &:focus,
     &:hover,
     &:active {
-      background-color: var(--danger);
+      opacity: 0.7;
     }
   }
 }
@@ -172,7 +161,7 @@ body {
 
 .form-style {
   display: flex;
-  flex: 1 320px;
+  flex: 0 1 320px;
   flex-direction: row;
   align-items: flex-end;
   flex-wrap: wrap;

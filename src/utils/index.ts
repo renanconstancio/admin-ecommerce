@@ -6,3 +6,4 @@ export function price(price: string) {
   );
   return result;
 }
+

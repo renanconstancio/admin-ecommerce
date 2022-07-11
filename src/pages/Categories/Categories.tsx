@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { Loading } from '../../components/Loading';
 import { ICategory, ICategories } from '../../types/Category';
 import { IPagination } from '../../types/Pagination';
+import { toast } from 'react-toastify';
 import api from '../../api/api';
 
 export function Categories() {
@@ -26,6 +27,28 @@ export function Categories() {
     })();
   }, [fetch]);
 
+  const resolveDelete = async (id: string) => {
+    if (!confirm('Deseja realmente excluir!')) return;
+
+    toast.promise(
+      api.get(`/categories`).then(() =>
+        fetch({
+          category: {
+            ...category,
+            data: category?.data?.filter(elem => elem.id !== id),
+          },
+          loading: false,
+          error: '',
+        }),
+      ),
+      {
+        pending: 'Um momento por favor...',
+        success: 'Removido com sucesso!',
+        error: 'Algo deu errado, tente novamente!',
+      },
+    );
+  };
+
   return (
     <div className="content">
       {loading ? (
@@ -45,21 +68,21 @@ export function Categories() {
             </li>
             {category?.data?.map(items => (
               <li key={items.id}>
-                <span>{items.name}</span>
-                <span>
+                <span className="flex-1">
                   <Link
                     to={`/categories/${items.id}/edit`}
                     className="btn btn-default"
                   >
-                    editar <i className="fa-solid fa-pen-to-square"></i>
+                    <i className="fa-solid fa-pen-to-square"></i>
                   </Link>
                   <span
-                    // onClick={() => delBrand(`${items.id}`)}
+                    onClick={() => resolveDelete(`${items.id}`)}
                     className="btn btn-danger"
                   >
-                    excluir <i className="fa-solid fa-trash"></i>
+                    <i className="fa-solid fa-trash"></i>
                   </span>
                 </span>
+                <span className="flex-11">{items.name}</span>
               </li>
             ))}
           </ul>

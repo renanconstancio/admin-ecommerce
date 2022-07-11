@@ -1,8 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link, useParams, useNavigate, useLocation } from 'react-router-dom';
 import { useForm, SubmitHandler } from 'react-hook-form';
-import { price } from '../../utils';
-import { IBrandItems } from '../../context/BrandsContext';
 import { ICategory, ICategories } from '../../types/Category';
 import { toast } from 'react-toastify';
 import api from '../../api/api';
@@ -18,7 +16,6 @@ export function CategoriesForm() {
 
   const {
     reset,
-    setValue,
     register,
     handleSubmit,
     formState: { errors },
@@ -58,7 +55,7 @@ export function CategoriesForm() {
   }, [category]);
 
   const onSubmit: SubmitHandler<ICategory> = async data => {
-    let promiseCategory: any;
+    let promiseCategory;
 
     const { description, keywords, name, position } = data;
 
