@@ -31,7 +31,7 @@ export function Categories() {
     if (!confirm('Deseja realmente excluir!')) return;
 
     toast.promise(
-      api.get(`/categories`).then(() =>
+      api.delete(`/categories/${id}`).then(() =>
         fetch({
           category: {
             ...category,

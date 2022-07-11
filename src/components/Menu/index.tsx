@@ -35,7 +35,7 @@ export function Menu() {
             <span className="title">Categorias</span>
           </Link>
         </li>
-        <li className={handleActveLink('brands')}>
+        {/* <li className={handleActveLink('brands')}>
           <Link to="/brands">
             <span className="icon">
               <i className="fa-solid fa-network-wired"></i>
@@ -58,7 +58,7 @@ export function Menu() {
             </span>
             <span className="title">Estoques</span>
           </Link>
-        </li>
+        </li> */}
         <li className={handleActveLink('customers')}>
           <Link to="/customers">
             <span className="icon">

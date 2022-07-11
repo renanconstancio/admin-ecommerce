@@ -1,13 +1,10 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { Link, useParams, useNavigate, useLocation } from 'react-router-dom';
-import { useCustomer } from '../../hooks/useCustomers';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { toast } from 'react-toastify';
 import { Loading } from '../../components/Loading';
-import {
-  ICustomerItems,
-  ICustomerRequest,
-} from '../../context/CustomersContext';
+import { ICustomer, ICustomers } from '../../types/Customer';
+import api from '../../api/api';
 
 export function CustomersForm() {
   const { id } = useParams<string>();
@@ -23,14 +20,27 @@ export function CustomersForm() {
     handleSubmit,
     reset,
     formState: { errors },
-  } = useForm<ICustomerItems>();
+  } = useForm<ICustomer>();
 
-  const { customer, loading, fetchFindCustomer, addCustomer, editCustomer } =
-    useCustomer();
+  const [{ customer, loading }, fetch] = useState<ICustomers<ICustomer>>({
+    customer: {} as ICustomer,
+    loading: true,
+    error: '',
+  });
 
   useEffect(() => {
-    if (customerId) fetchFindCustomer(customerId);
-  }, [customerId]);
+    (async () => {
+      if (customerId) {
+        await api.get(`/customers/${customerId}`).then(async res =>
+          fetch({
+            customer: await res.data,
+            loading: false,
+            error: '',
+          }),
+        );
+      }
+    })();
+  }, [fetch, customerId]);
 
   useEffect(() => {
     const url = pathname.split('/');
@@ -42,40 +52,46 @@ export function CustomersForm() {
     }
   }, [customer]);
 
-  const onSubmit: SubmitHandler<ICustomerRequest> = async data => {
-    let promiseCustomers: Promise<void> = {} as Promise<void>;
-    const {
-      first_name,
-      last_name,
-      cpf,
-      email,
-      check_email,
-      birth_date,
-      password,
-    } = data;
-    if (customer.id) {
-      promiseCustomers = editCustomer(customer.id, {
-        first_name,
-        last_name,
-        cpf,
-        email,
-        check_email,
-        birth_date,
-        password,
-      });
+  const onSubmit: SubmitHandler<ICustomer> = async data => {
+    let promiseCustomer;
+
+    const { name, email, cpf, cnpj, phone, avatar } = data;
+
+    if (data.id) {
+      promiseCustomer = api
+        .put(`/customers/${customerId}`, {
+          name,
+          email,
+          cpf,
+          cnpj,
+          phone,
+        })
+        .then(async res =>
+          fetch({
+            customer: await res.data,
+            loading: false,
+            error: '',
+          }),
+        );
     } else {
-      promiseCustomers = addCustomer({
-        first_name,
-        last_name,
-        cpf,
-        email,
-        check_email,
-        birth_date,
-        password,
-      });
+      promiseCustomer = api
+        .post(`/customers`, {
+          name,
+          email,
+          cpf,
+          cnpj,
+          phone,
+        })
+        .then(async res =>
+          fetch({
+            customer: await res.data,
+            loading: false,
+            error: '',
+          }),
+        );
     }
 
-    toast.promise(promiseCustomers, {
+    toast.promise(promiseCustomer, {
       pending: 'Um momento por favor...',
       success: 'Dados salvos com sucesso!',
       error: 'Algo deu errado, tente novamente!',
@@ -87,7 +103,7 @@ export function CustomersForm() {
   ) : (
     <div className="content">
       <div className="help-buttons-flex">
-        <h1>Clientes {customer.first_name}</h1>
+        <h1>Clientes {customer.name}</h1>
         <span>
           <Link to="/customers" className="btn btn-default">
             voltar <i className="fa-solid fa-undo"></i>
@@ -102,26 +118,16 @@ export function CustomersForm() {
         className="form-style form-customer"
         id="customers"
       >
-        <div className="form-input" style={{ width: 375 }}>
-          <label htmlFor="first_name">Nome *</label>
+        <div className="form-input flex-7">
+          <label htmlFor="name">Nome *</label>
           <input
             type="text"
-            {...register('first_name', { required: true })}
-            className={errors.first_name && 'input-invalid'}
+            {...register('name', { required: true })}
+            className={errors.name && 'input-invalid'}
           />
-          <small>{errors.first_name && 'Campo obrigatório!'}</small>
+          <small>{errors.name && 'Campo obrigatório!'}</small>
         </div>
-
-        <div className="form-input" style={{ width: 320 }}>
-          <label htmlFor="last_name">Sobrenome ?</label>
-          <input
-            type="text"
-            {...register('last_name', { required: false })}
-            className={errors.last_name && 'input-invalid'}
-          />
-          <small>{errors.last_name && 'Campo obrigatório!'}</small>
-        </div>
-        <div className="form-input" style={{ width: 420 }}>
+        <div className="form-input flex-6">
           <label htmlFor="email">E-mail</label>
           <input
             type="email"
@@ -132,8 +138,8 @@ export function CustomersForm() {
           />
           <small>{errors.email && 'Campo obrigatório!'}</small>
         </div>
-
-        {!customer.id && (
+        <div className="flex-12"></div>
+        {/* {!customer.id && (
           <div className="form-input" style={{ width: 420 }}>
             <label htmlFor="password">Senha *</label>
             <input
@@ -145,9 +151,9 @@ export function CustomersForm() {
             />
             <small>{errors.password && 'Campo obrigatório!'}</small>
           </div>
-        )}
+        )} */}
 
-        <div className="form-input">
+        <div className="form-input flex-3">
           <label htmlFor="cpf">CPF *</label>
           <input
             type="tel"
@@ -156,7 +162,7 @@ export function CustomersForm() {
           />
           <small>{errors.cpf && 'Campo obrigatório!'}</small>
         </div>
-        <div className="form-input">
+        <div className="form-input flex-3">
           <label htmlFor="birth_date">Data Aniversário ?</label>
           <input type="date" {...register('birth_date')} />
         </div>
