@@ -105,31 +105,21 @@ body {
   &.btn-default {
     color: #333;
     background-color: #fff;
-    &:focus,
-    &:hover,
-    &:active {
-      opacity: 0.7;
-    }
   }
 
   &.btn-primary {
     color: #fff;
     background-color: var(--color2);
-    &:focus,
-    &:hover,
-    &:active {
-      opacity: 0.7;
-    }
   }
 
   &.btn-danger {
     color: #fff;
     background-color: var(--danger);
-    &:focus,
-    &:hover,
-    &:active {
-      opacity: 0.7;
-    }
+  }
+  &:focus,
+  &:hover,
+  &:active {
+    opacity: 0.7;
   }
 }
 
