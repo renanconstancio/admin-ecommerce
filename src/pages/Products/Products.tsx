@@ -97,26 +97,26 @@ export function Products() {
           </div>
           <ul className="ul-content-list">
             <li>
-              <span>Nome</span>
-              <span>Ações</span>
+              <span className="flex-1">Ações</span>
+              <span className="flex-11">Nome</span>
             </li>
             {data?.map(items => (
               <li key={items.id}>
-                <span>{items.name}</span>
-                <span>
+                <span className="flex-1">
                   <Link
                     to={`/products/${items.id}/edit`}
                     className="btn btn-default"
                   >
-                    editar <i className="fa-solid fa-pen-to-square"></i>
+                    <i className="fa-solid fa-pen-to-square"></i>
                   </Link>
                   <span
                     onClick={() => resolveDelete(items)}
-                    className="btn btn-danger"
+                    className="btn btn-default"
                   >
-                    excluir <i className="fa-solid fa-trash"></i>
+                    <i className="fa-solid fa-trash"></i>
                   </span>
                 </span>
+                <span className="flex-11">{items.name}</span>
               </li>
             ))}
           </ul>

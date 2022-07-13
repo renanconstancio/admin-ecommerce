@@ -3,20 +3,8 @@ import { ToastContainer } from 'react-toastify';
 import { Menu } from './components/Menu';
 import { Content } from './components/Content';
 import { Dashboard } from './Dashboard';
-
-// import { Brands } from './pages/Brands/Brands';
-// import { BrandsForm } from './pages/Brands/BrandsForm';
-
-// import { Products } from './pages/Products/Products';
-// import { ProductsForm } from './pages/Products/ProductsForm';
-
-// import { Customers } from './pages/Customers/Customers';
-// import { CustomersForm } from './pages/Customers/CustomersForm';
-
 import { Categories } from './pages/Categories/Categories';
 import { CategoriesForm } from './pages/Categories/CategoriesForm';
-import { Customers } from './pages/Customers/Customers';
-import { CustomersForm } from './pages/Customers/CustomersForm';
 import { Products } from './pages/Products/Products';
 import { ProductsForm } from './pages/Products/ProductsForm';
 

@@ -98,8 +98,8 @@ export function Categories() {
           </div>
           <ul className="ul-content-list">
             <li>
-              <span>Nome</span>
-              <span>Ações</span>
+              <span className="flex-1">Ações</span>
+              <span className="flex-11">Nome</span>
             </li>
             {data?.map(items => (
               <li key={items.id}>
