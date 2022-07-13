@@ -7,6 +7,7 @@ import { Categories } from './pages/Categories/Categories';
 import { CategoriesForm } from './pages/Categories/CategoriesForm';
 import { Products } from './pages/Products/Products';
 import { ProductsForm } from './pages/Products/ProductsForm';
+import { ProductSkusForm } from './pages/Products/ProductSkusForm';
 
 export function App() {
   return (
@@ -29,6 +30,7 @@ export function App() {
         <Route path="/products" element={<Content />}>
           <Route index element={<Products />} />
           <Route path=":id/edit" element={<ProductsForm />} />
+          <Route path=":id/skus" element={<ProductSkusForm />} />
           <Route path="new" element={<ProductsForm />} />
         </Route>
 
