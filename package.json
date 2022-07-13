@@ -9,6 +9,7 @@
     "build:purge": "purgecss --css dist/assets/*.css --content dist/index.html dist/assets/*.js --output dist/assets"
   },
   "dependencies": {
+    "@tinymce/tinymce-react": "^4.1.0",
     "axios": "^0.26.0",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",

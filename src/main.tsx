@@ -1,10 +1,9 @@
 import ReactDOM from 'react-dom';
-
-import { App } from './App';
 import { ErrorProvider } from './context/ErrorContext';
+import { App } from './App';
 
-import 'react-toastify/dist/ReactToastify.css';
 import './style/app.scss';
+import 'react-toastify/dist/ReactToastify.css';
 
 ReactDOM.render(
   <ErrorProvider>

@@ -17,6 +17,8 @@ import { Categories } from './pages/Categories/Categories';
 import { CategoriesForm } from './pages/Categories/CategoriesForm';
 import { Customers } from './pages/Customers/Customers';
 import { CustomersForm } from './pages/Customers/CustomersForm';
+import { Products } from './pages/Products/Products';
+import { ProductsForm } from './pages/Products/ProductsForm';
 
 export function App() {
   return (
@@ -34,18 +36,19 @@ export function App() {
           <Route path=":id/edit" element={<BrandsForm />} />
           <Route path="new" element={<BrandsForm />} />
         </Route>
+      */}
 
         <Route path="/products" element={<Content />}>
           <Route index element={<Products />} />
           <Route path=":id/edit" element={<ProductsForm />} />
           <Route path="new" element={<ProductsForm />} />
-        </Route> */}
+        </Route>
 
-        <Route path="/customers" element={<Content />}>
+        {/* <Route path="/customers" element={<Content />}>
           <Route index element={<Customers />} />
           <Route path=":id/edit" element={<CustomersForm />} />
           <Route path="new" element={<CustomersForm />} />
-        </Route>
+        </Route> */}
 
         <Route path="" element={<Content />}>
           <Route index element={<Dashboard />} />

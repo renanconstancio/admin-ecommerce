@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { Link, useParams, useNavigate, useLocation } from 'react-router-dom';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { ICategory, ICategories } from '../../types/Category';
@@ -26,18 +26,18 @@ export function CategoriesForm() {
 
   const [{ category, loading }, fetch] = useState<ICategories<ICategory>>({
     category: {} as ICategory,
-    loading: true,
+    loading: false,
     error: '',
   });
 
   useEffect(() => {
     (async () => {
       if (categoryId) {
-        await api.get(`/categories/${categoryId}`).then(async res =>
+        await api.get(`/categories/${categoryId}`).then(async resp =>
           fetch({
-            category: await res.data,
-            loading: false,
+            category: await resp.data,
             error: '',
+            loading,
           }),
         );
       }
@@ -70,7 +70,7 @@ export function CategoriesForm() {
         .then(async res =>
           fetch({
             category: await res.data,
-            loading: false,
+            loading,
             error: '',
           }),
         );
@@ -85,7 +85,7 @@ export function CategoriesForm() {
         .then(async res =>
           fetch({
             category: await res.data,
-            loading: false,
+            loading,
             error: '',
           }),
         );
@@ -107,7 +107,7 @@ export function CategoriesForm() {
             voltar <i className="fa-solid fa-undo"></i>
           </Link>
           <button
-            form="categories"
+            form="category"
             type="submit"
             className="btn btn-primary"
             disabled={loading}
@@ -119,7 +119,7 @@ export function CategoriesForm() {
       <form
         onSubmit={handleSubmit(onSubmit)}
         className="form-style form-category"
-        id="categories"
+        id="category"
       >
         <div className="form-input flex-4">
           <label htmlFor="name">Nome *</label>

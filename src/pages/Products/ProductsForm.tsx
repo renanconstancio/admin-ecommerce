@@ -1,12 +1,11 @@
-import { ChangeEvent, useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Link, useParams, useNavigate, useLocation } from 'react-router-dom';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { Loading } from '../../components/Loading';
-import { IProductItems } from '../../context/ProductsContext';
-import { useProducts } from '../../hooks/useProducts';
-import { useBrands } from '../../hooks/useBrands';
+import { IProduct, IProducts } from '../../types/Product';
+import { Editor } from '@tinymce/tinymce-react';
 import { toast } from 'react-toastify';
-import { useCategories } from '../../hooks/useCategories';
+import api from '../../api/api';
 
 export function ProductsForm() {
   const { id } = useParams<string>();
@@ -15,29 +14,39 @@ export function ProductsForm() {
 
   const navigate = useNavigate();
 
-  const [resolveSelectBrand, setResolveSelectBrand] = useState<string>('');
-  const [resolveSelectCategory, setResolveSelectCategory] =
-    useState<string>('');
-
   const productId: string = id !== undefined ? id : '';
+
+  const editorRef = useRef(null);
 
   const {
     reset,
     register,
     handleSubmit,
-    setValue,
     formState: { errors },
-  } = useForm<IProductItems>({ defaultValues: {} as IProductItems });
+  } = useForm<IProduct>({
+    defaultValues: {} as IProduct,
+    mode: 'onChange',
+  });
 
-  const { brandsAll: brandsAll, loading: loadBrands } = useBrands();
-  const { categories: categoriesAll, loading: loadCategory } = useCategories();
-
-  const { product, loading, findProducts, editProduct, addProduct } =
-    useProducts();
+  const [{ product, loading }, fetch] = useState<IProducts<IProduct>>({
+    product: {} as IProduct,
+    loading: false,
+    error: '',
+  });
 
   useEffect(() => {
-    findProducts(productId);
-  }, []);
+    (async () => {
+      if (productId) {
+        await api.get(`/products/${productId}`).then(async resp =>
+          fetch({
+            product: await resp.data,
+            error: '',
+            loading,
+          }),
+        );
+      }
+    })();
+  }, [fetch, productId]);
 
   useEffect(() => {
     const url = pathname.split('/');
@@ -49,47 +58,40 @@ export function ProductsForm() {
     }
   }, [product]);
 
-  useEffect(() => {
-    const brandSelect = brandsAll.find(item => item.id === product.brands_id);
-    if (brandSelect !== undefined) {
-      setResolveSelectBrand(brandSelect.name);
-    }
-  }, [brandsAll, product]);
+  const onSubmit: SubmitHandler<IProduct> = async data => {
+    let promiseProduct;
 
-  const onResolveChangeBrands = (event: ChangeEvent<HTMLInputElement>) => {
-    const { value } = event.target;
-    const brandResolve = brandsAll.find(item => item.name === value);
-    if (brandResolve !== undefined) {
-      setValue('brands_id', brandResolve?.id);
-    }
-  };
+    const { description, name, price, quantity, sku } = data;
 
-  useEffect(() => {
-    const categorySelect = categoriesAll.find(
-      item => item.id === product.categories_id,
-    );
-    if (categorySelect !== undefined) {
-      setResolveSelectCategory(categorySelect.name);
-    }
-  }, [categoriesAll, product]);
-
-  const onResolveChangeCategories = (event: ChangeEvent<HTMLInputElement>) => {
-    const { value } = event.target;
-    const categoryResolve = categoriesAll.find(item => item.name === value);
-    if (categoryResolve !== undefined) {
-      setValue('categories_id', categoryResolve?.id);
-    }
-  };
-
-  const onSubmit: SubmitHandler<IProductItems> = async data => {
-    let promiseProducts: Promise<void> = {} as Promise<void>;
-    if (product.id) {
-      promiseProducts = editProduct(product.id, data);
+    if (data.id) {
+      promiseProduct = api
+        .put(`/products/${productId}`, {
+          description,
+          name,
+          price,
+          quantity,
+          sku,
+        })
+        .then(async res =>
+          fetch({
+            product: await res.data,
+            loading,
+            error: '',
+          }),
+        );
     } else {
-      promiseProducts = addProduct(data);
+      promiseProduct = api
+        .post(`/products`, { description, name, price, quantity, sku })
+        .then(async res =>
+          fetch({
+            product: await res.data,
+            loading,
+            error: '',
+          }),
+        );
     }
 
-    toast.promise(promiseProducts, {
+    toast.promise(promiseProduct, {
       pending: 'Um momento por favor...',
       success: 'Dados salvos com sucesso!',
       error: 'Algo deu errado, tente novamente!',
@@ -116,80 +118,92 @@ export function ProductsForm() {
         className="form-style form-customer"
         id="customers"
       >
-        <div className="form-input" style={{ width: 375 }}>
+        <div className="form-input flex-1">
+          <label htmlFor="sku">SKU *</label>
+          <input
+            type="text"
+            {...register('sku', { required: 'Campo obrigatório!' })}
+            className={errors.sku && 'input-invalid'}
+          />
+          <small>{errors.sku && errors.sku.message}</small>
+        </div>
+        <div className="form-input flex-1">
+          <label htmlFor="quantity">Preço *</label>
+          <input
+            type="number"
+            {...register('quantity', { required: 'Campo obrigatório!' })}
+            className={errors.quantity && 'input-invalid'}
+          />
+          <small>{errors.quantity && errors.quantity.message}</small>
+        </div>
+        <div className="form-input flex-1">
+          <label htmlFor="quantity">Estoque *</label>
+          <input
+            type="number"
+            {...register('quantity', { required: 'Campo obrigatório!' })}
+            className={errors.quantity && 'input-invalid'}
+          />
+          <small>{errors.quantity && errors.quantity.message}</small>
+        </div>
+        <div className="form-input flex-7">
           <label htmlFor="name">Nome *</label>
           <input
             type="text"
-            {...register('name', { required: true })}
+            {...register('name', { required: 'Campo obrigatório!' })}
             className={errors.name && 'input-invalid'}
           />
-          <small>{errors.name && 'Campo obrigatório!'}</small>
-        </div>
-        <div className="form-input" style={{ width: 175 }}>
-          <label htmlFor="name">Em Estoque</label>
-          <input readOnly type="text" />
-        </div>
-
-        <div style={{ width: '100%' }} />
-        <div className="form-input" style={{ width: 320 }}>
-          <label htmlFor="fakebrands_id">Marcas *</label>
-          <input
-            list="search_fakebrands_id"
-            name="fakebrands_id"
-            onChange={onResolveChangeBrands}
-            defaultValue={resolveSelectBrand}
-            type="search"
-          />
-          <datalist id="search_fakebrands_id">
-            {brandsAll &&
-              brandsAll.map(brand => (
-                <option value={brand.name} key={brand.id} />
-              ))}
-          </datalist>
-
-          <small>{errors.brands_id && 'Campo obrigatório!'}</small>
-        </div>
-
-        <div className="form-input" style={{ width: 320 }}>
-          <label htmlFor="fakecategory_id">Categorias *</label>
-          <input
-            list="search_fakecategory_id"
-            name="fakecategory_id"
-            onChange={onResolveChangeCategories}
-            defaultValue={resolveSelectCategory}
-            type="search"
-          />
-          <datalist id="search_fakecategory_id">
-            {categoriesAll &&
-              categoriesAll.map(category => (
-                <option value={category.name} key={category.id} />
-              ))}
-          </datalist>
-
-          <small>{errors.brands_id && 'Campo obrigatório!'}</small>
+          <small>{errors.name && errors.name.message}</small>
         </div>
 
         <div className="form-input" style={{ width: '100%' }}>
           <label htmlFor="description">Descrição</label>
-          <input
+          <Editor
+            apiKey={`${import.meta.env.VITE_KEY_TINYMCE}`}
+            // onInit={(evt, editor) => (editorRef.current = editor)}
+
+            {...register('description', {
+              required: false,
+            })}
+            init={{
+              height: 500,
+              menubar: false,
+              plugins: [
+                'advlist',
+                'autolink',
+                'lists',
+                'link',
+                'image',
+                'charmap',
+                'preview',
+                'anchor',
+                'searchreplace',
+                'visualblocks',
+                'code',
+                'fullscreen',
+                'insertdatetime',
+                'media',
+                'table',
+                'code',
+                'help',
+                'wordcount',
+              ],
+              toolbar:
+                'undo redo | blocks | ' +
+                'bold italic forecolor | alignleft aligncenter ' +
+                'alignright alignjustify | bullist numlist outdent indent | ' +
+                'removeformat | help',
+              content_style:
+                'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }',
+            }}
+          />
+          {/* <input
             type="text"
             {...register('description', {
               required: false,
             })}
             className={errors.description && 'input-invalid'}
-          />
+          /> */}
           <small>{errors.description && 'Campo obrigatório!'}</small>
-        </div>
-        <div className="form-input" style={{ width: '100%' }}>
-          <label htmlFor="description">Descrição Texto</label>
-          <input
-            type="text"
-            {...register('description_text', {
-              required: false,
-            })}
-            className={errors.description_text && 'input-invalid'}
-          />
-          <small>{errors.description_text && 'Campo obrigatório!'}</small>
         </div>
       </form>
     </div>

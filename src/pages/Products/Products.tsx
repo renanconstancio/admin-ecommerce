@@ -1,56 +1,136 @@
-import { useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { useCallback, useEffect, useState } from 'react';
+import { Link, useLocation } from 'react-router-dom';
+import { toast } from 'react-toastify';
 import { Loading } from '../../components/Loading';
-import { useError } from '../../hooks/useError';
-import { useProducts } from '../../hooks/useProducts';
+import { IPagination } from '../../types/Pagination';
+import { IProduct } from '../../types/Product';
+import { Pagination } from '../../components/Pagination';
+import api from '../../api/api';
 
 export function Products() {
-  const { products, loading, fetchProducts, delProduct } = useProducts();
-  const { setError } = useError();
+  const location = useLocation();
+
+  const queryParams = new URLSearchParams(location.search);
+  const page = queryParams.get('page') ? Number(queryParams.get('page')) : 1;
+  const limit = queryParams.get('limit')
+    ? Number(queryParams.get('limit'))
+    : 25;
+
+  const [query, setQuery] = useState<string>('');
+  const [{ data, loading, total }, fetch] = useState<IPagination<IProduct>>(
+    {} as IPagination<IProduct>,
+  );
+
+  const loadList = useCallback(
+    async (query, limit, page) => {
+      await api
+        .get(`/products?products[name]=${query}&limit=${limit}&page=${page}`)
+        .then(async resp =>
+          fetch({
+            ...(await resp.data),
+            loading: true,
+            error: '',
+          }),
+        )
+        .catch(err => {
+          if (err.response?.data?.msg) alert(err.response.data.msg);
+          else
+            alert(
+              'Erro ao tentar recuperar a lista. Tente novamente mais tarde',
+            );
+        });
+    },
+    [fetch, query, limit, page],
+  );
+
   useEffect(() => {
-    fetchProducts();
+    loadList('', limit, page);
+  }, [limit, page]);
 
-    setError({
-      type: 'danger',
-      message: `Não foi possivel carregar a lista!`,
-    });
-  }, []);
+  const resolveDelete = async (item: IProduct) => {
+    if (!confirm(`Deseja realmente excluir ${item.name}!`)) return;
 
-  return loading ? (
-    <Loading />
-  ) : (
+    toast.promise(
+      api.delete(`/products/${item.id}`).then(() => {
+        loadList('', limit, page);
+      }),
+      {
+        pending: 'Um momento por favor...',
+        success: 'Removido com sucesso!',
+        error: 'Algo deu errado, tente novamente!',
+      },
+    );
+  };
+
+  return (
     <div className="content">
-      <div className="help-buttons-flex">
-        <h1>Produtos</h1>
-        <Link to="/products/new" className="btn btn-primary">
-          novo <i className="fa-solid fa-plus"></i>
-        </Link>
-      </div>
-      <ul className="ul-content-list">
-        <li>
-          <span>Nome</span>
-          <span>Ações</span>
-        </li>
-        {products.data?.map(items => (
-          <li key={items.id}>
-            <span>{items.name}</span>
-            <span>
-              <Link
-                to={`/products/${items.id}/edit`}
-                className="btn btn-default"
+      {!loading ? (
+        <Loading />
+      ) : (
+        <>
+          <div className="help-buttons-flex" style={{ alignItems: 'center' }}>
+            <h1>Produtos</h1>
+            <div className="form-style flex-10">
+              <div
+                className="form-input"
+                style={{ width: '100%', flexDirection: 'row' }}
               >
-                editar <i className="fa-solid fa-pen-to-square"></i>
-              </Link>
-              <span
-                onClick={() => delProduct(`${items.id}`)}
-                className="btn btn-danger"
-              >
-                excluir <i className="fa-solid fa-trash"></i>
-              </span>
-            </span>
-          </li>
-        ))}
-      </ul>
+                <input
+                  type="search"
+                  placeholder="Pesquisar Produtos"
+                  style={{ width: '100%' }}
+                  value={query}
+                  onChange={e => setQuery(e.target.value)}
+                />
+                <button
+                  className="btn"
+                  style={{ borderRadius: 6, marginLeft: 6 }}
+                  onClick={() => loadList(query, limit, page)}
+                >
+                  <i className="fa fa-search"></i>
+                </button>
+              </div>
+            </div>
+            <Link to="/products/new" className="btn btn-primary">
+              novo <i className="fa-solid fa-plus"></i>
+            </Link>
+          </div>
+          <ul className="ul-content-list">
+            <li>
+              <span>Nome</span>
+              <span>Ações</span>
+            </li>
+            {data?.map(items => (
+              <li key={items.id}>
+                <span>{items.name}</span>
+                <span>
+                  <Link
+                    to={`/products/${items.id}/edit`}
+                    className="btn btn-default"
+                  >
+                    editar <i className="fa-solid fa-pen-to-square"></i>
+                  </Link>
+                  <span
+                    onClick={() => resolveDelete(items)}
+                    className="btn btn-danger"
+                  >
+                    excluir <i className="fa-solid fa-trash"></i>
+                  </span>
+                </span>
+              </li>
+            ))}
+          </ul>
+          <Pagination
+            params={{
+              query: `${query}`,
+              limit: `${limit}`,
+              page: `${page}`,
+            }}
+            pathname={location.pathname}
+            total={total}
+          />
+        </>
+      )}
     </div>
   );
 }

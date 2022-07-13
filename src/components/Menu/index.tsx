@@ -35,20 +35,20 @@ export function Menu() {
             <span className="title">Categorias</span>
           </Link>
         </li>
-        {/* <li className={handleActveLink('brands')}>
-          <Link to="/brands">
-            <span className="icon">
-              <i className="fa-solid fa-network-wired"></i>
-            </span>
-            <span className="title">Marcas</span>
-          </Link>
-        </li>
         <li className={handleActveLink('products')}>
           <Link to="/products">
             <span className="icon">
               <i className="fa-solid fa-box"></i>
             </span>
             <span className="title">Produtos</span>
+          </Link>
+        </li>
+        {/* <li className={handleActveLink('brands')}>
+          <Link to="/brands">
+            <span className="icon">
+              <i className="fa-solid fa-network-wired"></i>
+            </span>
+            <span className="title">Marcas</span>
           </Link>
         </li>
         <li className={handleActveLink('products/skus')}>

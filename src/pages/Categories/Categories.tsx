@@ -10,32 +10,29 @@ import { Pagination } from '../../components/Pagination';
 export function Categories() {
   const location = useLocation();
 
-  const queryParams = new URLSearchParams(location.search);
-  const page = queryParams.get('page') ? Number(queryParams.get('page')) : 1;
-  const limit = queryParams.get('limit') ? Number(queryParams.get('limit')) : 1;
+  const qParams = new URLSearchParams(location.search);
+  const page = qParams.get('page') ? Number(qParams.get('page')) : 1;
+  const limit = qParams.get('limit') ? Number(qParams.get('limit')) : 25;
 
-  const [query, setSearch] = useState<string>('');
-  const [{ category, loading }, fetch] = useState<
-    ICategories<IPagination<ICategory>>
-  >({
-    category: {} as IPagination<ICategory>,
-    loading: true,
-    error: '',
-  });
+  const [query, setQuery] = useState<string>('');
 
-  const loadListining = useCallback(
+  const [{ data, loading, total }, fetch] = useState<IPagination<ICategory>>(
+    {} as IPagination<ICategory>,
+  );
+
+  const loadList = useCallback(
     async (query, limit, page) => {
       await api
         .get(
           `/categories?categories[name]=${query}&limit=${limit}&page=${page}`,
         )
-        .then(async res =>
+        .then(async resp => {
           fetch({
-            category: await res.data,
-            loading: false,
+            ...(await resp.data),
+            loading: true,
             error: '',
-          }),
-        )
+          });
+        })
         .catch(err => {
           if (err.response?.data?.msg) alert(err.response.data.msg);
           else
@@ -48,23 +45,16 @@ export function Categories() {
   );
 
   useEffect(() => {
-    loadListining(query, limit, page);
-  }, [query, limit, page]);
+    loadList('', limit, page);
+  }, [limit, page]);
 
   const resolveDelete = async (item: ICategory) => {
     if (!confirm(`Deseja realmente excluir ${item.name}!`)) return;
 
     toast.promise(
-      api.delete(`/categories/${item.id}`).then(() =>
-        fetch({
-          category: {
-            ...category,
-            data: category?.data?.filter(elem => elem.id !== item.id),
-          },
-          loading: false,
-          error: '',
-        }),
-      ),
+      api.delete(`/categories/${item.id}`).then(() => {
+        loadList('', limit, page);
+      }),
       {
         pending: 'Um momento por favor...',
         success: 'Removido com sucesso!',
@@ -75,7 +65,7 @@ export function Categories() {
 
   return (
     <div className="content">
-      {loading ? (
+      {!loading ? (
         <Loading />
       ) : (
         <>
@@ -90,12 +80,13 @@ export function Categories() {
                   type="search"
                   placeholder="Pesquisar Categoria"
                   style={{ width: '100%' }}
-                  onChange={e => setSearch(e.target.value)}
+                  value={query}
+                  onChange={e => setQuery(e.target.value)}
                 />
                 <button
                   className="btn"
                   style={{ borderRadius: 6, marginLeft: 6 }}
-                  onClick={() => loadListining(query, page, limit)}
+                  onClick={() => loadList(query, limit, page)}
                 >
                   <i className="fa fa-search"></i>
                 </button>
@@ -110,7 +101,7 @@ export function Categories() {
               <span>Nome</span>
               <span>Ações</span>
             </li>
-            {category?.data?.map(items => (
+            {data?.map(items => (
               <li key={items.id}>
                 <span className="flex-1">
                   <Link
@@ -121,7 +112,7 @@ export function Categories() {
                   </Link>
                   <span
                     onClick={() => resolveDelete(items)}
-                    className="btn btn-danger"
+                    className="btn btn-default"
                   >
                     <i className="fa-solid fa-trash"></i>
                   </span>
@@ -138,7 +129,7 @@ export function Categories() {
               page: `${page}`,
             }}
             pathname={location.pathname}
-            total={category.total}
+            total={total}
           />
         </>
       )}
