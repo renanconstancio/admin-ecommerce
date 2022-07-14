@@ -62,16 +62,16 @@ export function ProductsForm() {
   const onSubmit: SubmitHandler<IProduct> = async data => {
     let promiseProduct;
 
-    const { description, name, price, quantity, sku } = data;
+    const { description, name, description_text, keywords, visible } = data;
 
     if (data.id) {
       promiseProduct = api
         .put(`/products/${productId}`, {
           description,
           name,
-          price,
-          quantity,
-          sku,
+          description_text,
+          keywords,
+          visible,
         })
         .then(async res =>
           fetch({
@@ -82,7 +82,13 @@ export function ProductsForm() {
         );
     } else {
       promiseProduct = api
-        .post(`/products`, { description, name, price, quantity, sku })
+        .post(`/products`, {
+          description,
+          name,
+          description_text,
+          keywords,
+          visible,
+        })
         .then(async res =>
           fetch({
             product: await res.data,
@@ -101,7 +107,6 @@ export function ProductsForm() {
 
   return (
     <div className="content">
-      {' '}
       {loading ? (
         <Loading />
       ) : (
@@ -134,33 +139,6 @@ export function ProductsForm() {
             className="form-style form-product"
             id="products"
           >
-            <div className="form-input flex-1">
-              <label htmlFor="sku">SKU *</label>
-              <input
-                type="text"
-                {...register('sku', { required: 'Campo obrigatório!' })}
-                className={errors.sku && 'input-invalid'}
-              />
-              <small>{errors.sku && errors.sku.message}</small>
-            </div>
-            <div className="form-input flex-1">
-              <label htmlFor="quantity">Preço *</label>
-              <input
-                type="number"
-                {...register('quantity', { required: 'Campo obrigatório!' })}
-                className={errors.quantity && 'input-invalid'}
-              />
-              <small>{errors.quantity && errors.quantity.message}</small>
-            </div>
-            <div className="form-input flex-1">
-              <label htmlFor="quantity">Estoque *</label>
-              <input
-                type="number"
-                {...register('quantity', { required: 'Campo obrigatório!' })}
-                className={errors.quantity && 'input-invalid'}
-              />
-              <small>{errors.quantity && errors.quantity.message}</small>
-            </div>
             <div className="form-input flex-7">
               <label htmlFor="name">Nome *</label>
               <input
@@ -170,14 +148,40 @@ export function ProductsForm() {
               />
               <small>{errors.name && errors.name.message}</small>
             </div>
-
+            <div className="form-input flex-7">
+              <label htmlFor="sku">KEYWORDS</label>
+              <input
+                type="text"
+                {...register('keywords', { required: 'Campo obrigatório!' })}
+                className={errors.keywords && 'input-invalid'}
+              />
+              <small>{errors.keywords && errors.keywords.message}</small>
+            </div>
             <div className="form-input flex-12">
-              <label htmlFor="description">Descrição</label>
+              <label htmlFor="quantity">DESCRIPTION *</label>
+              <input
+                type="number"
+                {...register('description', { required: 'Campo obrigatório!' })}
+                className={errors.description && 'input-invalid'}
+              />
+              <small>{errors.description && errors.description.message}</small>
+            </div>
+
+            <div className="form-input flex-1">
+              <label htmlFor="visible">KEYWORDS</label>
+              <input
+                type="text"
+                {...register('visible', { required: 'Campo obrigatório!' })}
+                className={errors.visible && 'input-invalid'}
+              />
+              <small>{errors.visible && errors.visible.message}</small>
+            </div>
+            <div className="form-input flex-12">
+              <label htmlFor="description_text">Descrição</label>
               <Editor
                 apiKey={`${import.meta.env.VITE_KEY_TINYMCE}`}
-                // onInit={(evt, editor) => (editorRef.current = editor)}
-                initialValue={product.description}
-                {...register('description', {
+                initialValue={product.description_text}
+                {...register('description_text', {
                   required: false,
                 })}
                 init={{

@@ -2,11 +2,11 @@ import { IProductSku } from './ProductSku';
 
 export interface IProduct {
   id: string;
-  sku: string;
   name: string;
-  price: number;
-  quantity: number;
+  keywords: string;
   description: string;
+  description_text: string;
+  visible: string;
   skus?: IProductSku[];
   created_at: string;
   updated_at: string;
