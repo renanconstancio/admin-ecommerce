@@ -1,19 +1,17 @@
-import { IProductSku } from './ProductSku';
-
-export interface IProduct {
+export interface IProductSku {
   id: string;
+  product_id: string;
   sku: string;
-  name: string;
+  cost_price: number;
+  sale_price: number;
   price: number;
   quantity: number;
-  description: string;
-  skus?: IProductSku[];
   created_at: string;
   updated_at: string;
   deleted_at: string | null;
 }
 
-export interface IProducts<T> {
+export interface IProductsSkus<T> {
   product: T;
   loading: boolean;
   error: string;

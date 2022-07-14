@@ -7,3 +7,7 @@ export function price(price: string) {
   return result;
 }
 
+export const { format: formatPrice } = new Intl.NumberFormat('pt-br', {
+  style: 'currency',
+  currency: 'BRL',
+});
