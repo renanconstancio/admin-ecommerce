@@ -69,7 +69,12 @@ export function Products() {
         <Loading />
       ) : (
         <>
-          <div className="help-buttons-flex" style={{ alignItems: 'center' }}>
+          <div
+            className="help-buttons-flex"
+            style={{
+              alignItems: 'center',
+            }}
+          >
             <h1>Produtos</h1>
             <div className="form-style flex-10">
               <div
@@ -106,13 +111,13 @@ export function Products() {
                 <span className="flex-1">
                   <Link
                     to={`/products/${items.id}/edit`}
-                    className="btn btn-default"
+                    className="btn btn-success"
                   >
                     <i className="fa-solid fa-pen-to-square"></i>
                   </Link>
                   <span
                     onClick={() => resolveDelete(items)}
-                    className="btn btn-default"
+                    className="btn btn-danger"
                   >
                     <i className="fa-solid fa-trash"></i>
                   </span>

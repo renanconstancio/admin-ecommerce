@@ -138,15 +138,6 @@ export function ProductSkusForm() {
           <div className="help-buttons-flex">
             <h1>{product?.name}</h1>
             <span>
-              {/* <Link
-            to={`/products/${product.id}/photos`}
-            className="btn btn-default"
-          >
-            Fotos <i className="fa-solid fa-photo-film"></i>
-          </Link> */}
-              {/* <Link to={`/products/${product.id}/skus`} className="btn btn-default">
-            SKUs <i className="fa-solid fa-box"></i>
-          </Link> */}
               <Link
                 to={`/products/${product.id}/edit`}
                 className="btn btn-default"
@@ -156,7 +147,7 @@ export function ProductSkusForm() {
 
               <button
                 type="button"
-                className="btn btn-default"
+                className="btn btn-info"
                 onClick={() => append({} as IProductSku)}
               >
                 adicionar <i className="fa-solid fa-plus"></i>
@@ -202,7 +193,7 @@ export function ProductSkusForm() {
                     <i className="fa-solid fa-trash"></i>
                   </span>
                   <Link
-                    to={`/products/${product.id}/skus`}
+                    to={`/products/${product.id}/skus/${field.id}/images`}
                     className="btn btn-primary"
                   >
                     <i className="fa-solid fa-photo-film"></i>

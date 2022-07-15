@@ -11,10 +11,11 @@ $fa-font-path: './fontawesome-6.0.0/webfonts';
   --color5: #ac80a0;
 
   --default: #eee;
-  --info: #c6d4e1;
+  --primary: #3685b5;
+  --info: #8ec2f3;
   --success: #58ce74;
-  --warning: #dceb5b;
-  --danger: #bf2a23;
+  --warning: #e9e521;
+  --danger: #fa5249;
 }
 
 *,
@@ -104,18 +105,34 @@ body {
 ---------------------------- */
   &.btn-default {
     color: #333;
-    background-color: #fff;
+    background-color: var(--default);
   }
 
   &.btn-primary {
     color: #fff;
-    background-color: var(--color2);
+    background-color: var(--primary);
+  }
+
+  &.btn-success {
+    color: #fff;
+    background-color: var(--success);
+  }
+
+  &.btn-warning {
+    color: #fff;
+    background-color: var(--warning);
   }
 
   &.btn-danger {
     color: #fff;
     background-color: var(--danger);
   }
+
+  &.btn-info {
+    color: #fff;
+    background-color: var(--info);
+  }
+
   &:focus,
   &:hover,
   &:active {
@@ -147,6 +164,8 @@ body {
   justify-content: space-between;
   align-items: flex-start;
   flex-wrap: wrap;
+  border-bottom: solid 1px #f1f1f1;
+  padding-bottom: 16px;
 }
 
 .form-style {

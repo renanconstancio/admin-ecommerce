@@ -9,6 +9,7 @@ import { CategoriesForm } from './pages/Categories/CategoriesForm';
 import { Products } from './pages/Products/Products';
 import { ProductsForm } from './pages/Products/ProductsForm';
 import { ProductSkusForm } from './pages/Products/ProductSkusForm';
+import { ProductImagesForm } from './pages/Products/ProductImagesForm';
 
 export function App() {
   return (
@@ -33,6 +34,10 @@ export function App() {
             <Route index element={<Products />} />
             <Route path=":id/edit" element={<ProductsForm />} />
             <Route path=":id/skus" element={<ProductSkusForm />} />
+            <Route
+              path=":id/skus/:idsku/images"
+              element={<ProductImagesForm />}
+            />
             <Route path="new" element={<ProductsForm />} />
           </Route>
 
