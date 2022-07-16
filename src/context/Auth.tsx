@@ -39,6 +39,7 @@ export const AuthProvider: React.FC = ({ children }) => {
       })
       .catch((err: { response: { data: { message: any } } }) => {
         const { message } = err.response.data;
+        throw new Error(message);
       });
   };
 

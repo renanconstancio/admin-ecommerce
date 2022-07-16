@@ -2,9 +2,9 @@ $fa-font-path: './fontawesome-6.0.0/webfonts';
 @import './fontawesome-6.0.0/scss/fontawesome.scss';
 @import './fontawesome-6.0.0/scss/solid.scss';
 @import './fontawesome-6.0.0/scss/brands.scss';
-@import './theme-default.scss';
+// @import './theme-default.scss';
 // @import './theme-light.scss';
-// @import './theme-dark.scss';
+@import './theme-dark.scss';
 
 *,
 ::after,
@@ -119,6 +119,10 @@ body {
   &.btn-info {
     color: #fff;
     background-color: var(--info);
+  }
+
+  &:disabled {
+    cursor: progress;
   }
 
   &:focus,

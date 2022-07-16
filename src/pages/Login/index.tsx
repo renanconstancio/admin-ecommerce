@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { useForm } from 'react-hook-form';
 import { useAuth } from '../../hooks/useAuth';
@@ -10,7 +10,8 @@ type LoginType = {
 };
 
 export const LogIn: React.FC = () => {
-  const { signed, login } = useAuth();
+  const [loading, setLoading] = useState<boolean>(false);
+  const { login } = useAuth();
 
   const {
     register,
@@ -19,7 +20,14 @@ export const LogIn: React.FC = () => {
   } = useForm<LoginType>();
 
   const onSubmit = async (data: LoginType) => {
-    await login(data);
+    try {
+      setLoading(true);
+      await login(data);
+    } catch (error) {
+      alert('Combinação incorreta de e-mail/senha.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -59,7 +67,8 @@ export const LogIn: React.FC = () => {
         <div className="form-input flex-12 mr-clear">
           <button
             type="submit"
-            className="btn btn-primary text-uppercase flex-12"
+            disabled={loading}
+            className="btn btn-primary btn-loading text-uppercase flex-12"
             style={{
               marginTop: 16,
               padding: 12,
