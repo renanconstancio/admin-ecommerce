@@ -9,17 +9,13 @@ import { IProductSku } from '../../types/ProductSku';
 import { Helmet } from 'react-helmet-async';
 import { api } from '../../api/api';
 
-export function ProductImagesForm() {
+export const ProductImagesForm: React.FC = () => {
   const { id: productId, idsku: productSkuId } =
     useParams<{ [key: string]: '' }>();
 
   const { pathname } = useLocation();
 
   const navigate = useNavigate();
-
-  // const productId: string = id !== undefined ? id : '';
-
-  // const productSkuId: string = idsku !== undefined ? idsku : '';
 
   const {
     reset,
@@ -212,4 +208,4 @@ export function ProductImagesForm() {
       </Helmet>
     </div>
   );
-}
+};

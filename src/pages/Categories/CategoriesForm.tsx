@@ -1,18 +1,17 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link, useParams, useNavigate, useLocation } from 'react-router-dom';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { ICategory, ICategories } from '../../types/Category';
 import { toast } from 'react-toastify';
 import { api } from '../../api/api';
+import { Helmet } from 'react-helmet-async';
 
-export function CategoriesForm() {
-  const { id } = useParams<string>();
+export const CategoriesForm: React.FC = () => {
+  const { id: categoryId } = useParams<{ [key: string]: '' }>();
 
   const { pathname } = useLocation();
 
   const navigate = useNavigate();
-
-  const categoryId: string = id !== undefined ? id : '';
 
   const {
     reset,
@@ -163,6 +162,9 @@ export function CategoriesForm() {
           <small>{errors.description && 'Campo obrigatório!'}</small>
         </div>
       </form>
+      <Helmet>
+        <title>Categorias - Cadastrar/Editar</title>
+      </Helmet>
     </div>
   );
-}
+};

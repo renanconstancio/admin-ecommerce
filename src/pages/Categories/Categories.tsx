@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { Pagination } from '../../components/Pagination';
 import { Link, useLocation } from 'react-router-dom';
 import { Loading } from '../../components/Loading';
@@ -6,8 +6,9 @@ import { ICategory } from '../../types/Category';
 import { IPagination } from '../../types/Pagination';
 import { toast } from 'react-toastify';
 import { api } from '../../api/api';
+import { Helmet } from 'react-helmet-async';
 
-export function Categories() {
+export const Categories: React.FC = () => {
   const location = useLocation();
 
   const qParams = new URLSearchParams(location.search);
@@ -103,7 +104,7 @@ export function Categories() {
             </li>
             {data?.map(items => (
               <li key={items.id}>
-                <span className="flex-1">
+                <span className="flex flex-1">
                   <Link
                     to={`/categories/${items.id}/edit`}
                     className="btn btn-default"
@@ -133,6 +134,9 @@ export function Categories() {
           />
         </>
       )}
+      <Helmet>
+        <title>Categorias - Lista</title>
+      </Helmet>
     </div>
   );
-}
+};

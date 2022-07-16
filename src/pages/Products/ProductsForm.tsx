@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link, useParams, useNavigate, useLocation } from 'react-router-dom';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { Loading } from '../../components/Loading';
@@ -8,16 +8,12 @@ import { toast } from 'react-toastify';
 import { Helmet } from 'react-helmet-async';
 import { api } from '../../api/api';
 
-export function ProductsForm() {
-  const { id } = useParams<string>();
+export const ProductsForm: React.FC = () => {
+  const { id: productId } = useParams<{ [key: string]: '' }>();
 
   const { pathname } = useLocation();
 
   const navigate = useNavigate();
-
-  const productId: string = id !== undefined ? id : '';
-
-  const editorRef = useRef(null);
 
   const {
     reset,
@@ -234,4 +230,4 @@ export function ProductsForm() {
       </Helmet>
     </div>
   );
-}
+};

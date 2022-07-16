@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link, useParams, useNavigate, useLocation } from 'react-router-dom';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { toast } from 'react-toastify';
@@ -6,14 +6,12 @@ import { Loading } from '../../components/Loading';
 import { ICustomer, ICustomers } from '../../types/Customer';
 import { api } from '../../api/api';
 
-export function CustomersForm() {
-  const { id } = useParams<string>();
+export const CustomersForm: React.FC = () => {
+  const { id: customerId } = useParams<{ [key: string]: '' }>();
 
   const { pathname } = useLocation();
 
   const navigate = useNavigate();
-
-  const customerId: string = id !== undefined ? id : '';
 
   const {
     register,
@@ -169,4 +167,4 @@ export function CustomersForm() {
       </form>
     </div>
   );
-}
+};

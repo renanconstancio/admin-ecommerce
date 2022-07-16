@@ -14,14 +14,12 @@ import { IProductSku } from '../../types/ProductSku';
 import { Helmet } from 'react-helmet-async';
 import { api } from '../../api/api';
 
-export function ProductSkusForm() {
-  const { id } = useParams<string>();
+export const ProductSkusForm: React.FC = () => {
+  const { id: productId } = useParams<{ [key: string]: '' }>();
 
   const { pathname } = useLocation();
 
   const navigate = useNavigate();
-
-  const productId: string = id !== undefined ? id : '';
 
   const {
     reset,
@@ -289,4 +287,4 @@ export function ProductSkusForm() {
       </Helmet>
     </div>
   );
-}
+};
