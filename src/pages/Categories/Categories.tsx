@@ -1,11 +1,11 @@
 import { useCallback, useEffect, useState } from 'react';
+import { Pagination } from '../../components/Pagination';
 import { Link, useLocation } from 'react-router-dom';
 import { Loading } from '../../components/Loading';
-import { ICategory, ICategories } from '../../types/Category';
+import { ICategory } from '../../types/Category';
 import { IPagination } from '../../types/Pagination';
 import { toast } from 'react-toastify';
-import api from '../../api/api';
-import { Pagination } from '../../components/Pagination';
+import { api } from '../../api/api';
 
 export function Categories() {
   const location = useLocation();

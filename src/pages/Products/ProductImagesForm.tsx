@@ -1,18 +1,13 @@
 import { useEffect, useState } from 'react';
 import { Link, useParams, useNavigate, useLocation } from 'react-router-dom';
 
-import {
-  useForm,
-  SubmitHandler,
-  useFieldArray,
-  Controller,
-} from 'react-hook-form';
+import { useForm, SubmitHandler, useFieldArray } from 'react-hook-form';
 import { Loading } from '../../components/Loading';
 import { IProduct, IProducts } from '../../types/Product';
 import { toast } from 'react-toastify';
 import { IProductSku } from '../../types/ProductSku';
 import { Helmet } from 'react-helmet-async';
-import api from '../../api/api';
+import { api } from '../../api/api';
 
 export function ProductImagesForm() {
   const { id: productId, idsku: productSkuId } =

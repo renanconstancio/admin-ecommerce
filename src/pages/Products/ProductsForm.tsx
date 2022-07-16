@@ -6,7 +6,7 @@ import { IProduct, IProducts } from '../../types/Product';
 import { Editor } from '@tinymce/tinymce-react';
 import { toast } from 'react-toastify';
 import { Helmet } from 'react-helmet-async';
-import api from '../../api/api';
+import { api } from '../../api/api';
 
 export function ProductsForm() {
   const { id } = useParams<string>();

@@ -12,7 +12,7 @@ import { IProduct, IProducts } from '../../types/Product';
 import { toast } from 'react-toastify';
 import { IProductSku } from '../../types/ProductSku';
 import { Helmet } from 'react-helmet-async';
-import api from '../../api/api';
+import { api } from '../../api/api';
 
 export function ProductSkusForm() {
   const { id } = useParams<string>();

@@ -1,9 +1,9 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link, useParams, useNavigate, useLocation } from 'react-router-dom';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { ICategory, ICategories } from '../../types/Category';
 import { toast } from 'react-toastify';
-import api from '../../api/api';
+import { api } from '../../api/api';
 
 export function CategoriesForm() {
   const { id } = useParams<string>();

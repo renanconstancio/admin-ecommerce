@@ -1,6 +1,12 @@
 import axios from 'axios';
 
-const api = axios.create({
+export const defaults = {
+  headers: {
+    Authorization: '',
+  },
+};
+
+export const api = axios.create({
   baseURL: 'http://localhost:8000',
 });
 
@@ -35,5 +41,3 @@ const api = axios.create({
 //     console.log('ERROR', error);
 //   },
 // );
-
-export default api;

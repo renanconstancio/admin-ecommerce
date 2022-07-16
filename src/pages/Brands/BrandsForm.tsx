@@ -1,9 +1,7 @@
 import { useEffect } from 'react';
 import { Link, useParams, useNavigate, useLocation } from 'react-router-dom';
 import { useForm, SubmitHandler } from 'react-hook-form';
-import { useBrands } from '../../hooks/useBrands';
 import { price } from '../../utils';
-import { IBrandItems } from '../../context/BrandsContext';
 import { toast } from 'react-toastify';
 
 export function BrandsForm() {

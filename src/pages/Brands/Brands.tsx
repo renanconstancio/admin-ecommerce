@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { Loading } from '../../components/Loading';
 import { IBrand, IBrands } from '../../types/Brand';
 import { IPagination } from '../../types/Pagination';
-import api from '../../api/api';
+import { api } from '../../api/api';
 
 export function Brands() {
   const [{ brand, loading }, fetch] = useState<IBrands<IPagination<IBrand>>>({

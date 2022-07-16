@@ -6,7 +6,7 @@ import { IPagination } from '../../types/Pagination';
 import { IProduct } from '../../types/Product';
 import { Pagination } from '../../components/Pagination';
 import { Helmet } from 'react-helmet-async';
-import api from '../../api/api';
+import { api } from '../../api/api';
 
 export function Products() {
   const location = useLocation();

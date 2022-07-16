@@ -1,12 +1,12 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import api from '../../api/api';
 import { Loading } from '../../components/Loading';
 import { ICustomer, ICustomers } from '../../types/Customer';
 import { IPagination } from '../../types/Pagination';
+import { api } from '../../api/api';
 
-export function Customers() {
+export const Customers: React.FC = () => {
   const [{ customer, loading }, fetch] = useState<
     ICustomers<IPagination<ICustomer>>
   >({
@@ -86,4 +86,4 @@ export function Customers() {
       </ul>
     </div>
   );
-}
+};

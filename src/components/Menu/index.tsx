@@ -1,8 +1,11 @@
 import { Link, useLocation } from 'react-router-dom';
+import { useAuth } from '../../hooks/useAuth';
 import './style.scss';
 
 export function Menu() {
   const location = useLocation();
+
+  const { logout } = useAuth();
 
   const handleActveLink = (str: string) => {
     return location.pathname.split('/')[1] === str ? 'active' : '';
@@ -65,6 +68,14 @@ export function Menu() {
               <i className="fa-solid fa-user"></i>
             </span>
             <span className="title">Clientes</span>
+          </Link>
+        </li>
+        <li>
+          <Link to="/login" onClick={() => logout()}>
+            <span className="icon">
+              <i className="fa-solid fa-arrow-right-from-bracket"></i>
+            </span>
+            <span className="title">LogOut</span>
           </Link>
         </li>
       </ul>
