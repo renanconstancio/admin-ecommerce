@@ -179,7 +179,7 @@ export function ProductSkusForm() {
                   padding: '0 0 16px 0',
                 }}
               >
-                <li style={{ marginRight: 6 }}>
+                <li style={{ marginRight: 16 }}>
                   {/* <Link
                     to={`/products/${product.id}/skus`}
                     className="btn btn-danger"

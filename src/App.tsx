@@ -10,7 +10,7 @@ export const App: React.FC = () => {
 
   return (
     <HelmetProvider>
-      {signed ? <LoginRoutes /> : <AuthRoutes />}
+      {!signed ? <LoginRoutes /> : <AuthRoutes />}
       <ToastContainer />
     </HelmetProvider>
   );

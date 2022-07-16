@@ -1,4 +1,5 @@
 import React from 'react';
+import { Helmet } from 'react-helmet-async';
 import { useForm } from 'react-hook-form';
 import { useAuth } from '../../hooks/useAuth';
 import './style.scss';
@@ -55,7 +56,7 @@ export const LogIn: React.FC = () => {
           />
           {errors.password && <small>{errors.password.message}</small>}
         </div>
-        <div className="form-input flex-12">
+        <div className="form-input flex-12 mr-clear">
           <button
             type="submit"
             className="btn btn-primary text-uppercase flex-12"
@@ -68,6 +69,9 @@ export const LogIn: React.FC = () => {
           </button>
         </div>
       </div>
+      <Helmet>
+        <title>Login - Administrativo</title>
+      </Helmet>
     </form>
   );
 };

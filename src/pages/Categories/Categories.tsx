@@ -71,9 +71,9 @@ export function Categories() {
         <>
           <div className="help-buttons-flex" style={{ alignItems: 'center' }}>
             <h1 className="flex-1">Categorias</h1>
-            <div className="form-style flex-10">
+            <div className="form-style flex-10 ">
               <div
-                className="form-input"
+                className="form-input clear"
                 style={{ width: '100%', flexDirection: 'row' }}
               >
                 <input

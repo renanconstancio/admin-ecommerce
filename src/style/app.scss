@@ -2,21 +2,9 @@ $fa-font-path: './fontawesome-6.0.0/webfonts';
 @import './fontawesome-6.0.0/scss/fontawesome.scss';
 @import './fontawesome-6.0.0/scss/solid.scss';
 @import './fontawesome-6.0.0/scss/brands.scss';
-
-:root {
-  --hex-1: #061826;
-  --hex-2: #0471a6;
-  --hex-3: #3685b5;
-  --hex-4: #89aae6;
-  --hex-5: #ac80a0;
-
-  --default: #eee;
-  --primary: #3685b5;
-  --success: #58ce74;
-  --warning: #e9e521;
-  --danger: #fa5249;
-  --info: #8ec2f3;
-}
+@import './theme-default.scss';
+// @import './theme-light.scss';
+// @import './theme-dark.scss';
 
 *,
 ::after,
@@ -170,26 +158,34 @@ body {
 
 .form-style {
   display: flex;
-  flex-basis: 100%;
+  // flex-basis: 100%;
   flex-direction: row;
   flex-wrap: wrap;
   .form-input {
     display: flex;
     flex-direction: column;
     margin-right: 16px;
-    margin-bottom: 18px;
+    margin-top: 18px;
 
     &.mr-clear {
       margin-right: 0;
     }
     &.mb-clear {
+      margin-bottom: 0;
+    }
+    &.mt-clear {
+      margin-top: 0;
+    }
+
+    &.clear {
+      margin-top: 0;
       margin-right: 0;
     }
 
-    &:nth-last-child(1) {
-      margin-right: 0;
-      margin-bottom: 0;
-    }
+    // &:nth-last-child(1) {
+    //   margin-right: 0;
+    //   margin-bottom: 0;
+    // }
 
     label {
       margin-bottom: 3px;
@@ -211,10 +207,10 @@ body {
         display: none;
       }
       &.input-invalid {
-        border-color: var(--hex-5);
+        border-color: var(--hex-2);
         + small {
           display: flex;
-          color: var(--hex-5);
+          color: var(--hex-2);
         }
       }
     }
