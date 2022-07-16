@@ -108,7 +108,7 @@ export const Products: React.FC = () => {
             </li>
             {data?.map(items => (
               <li key={items.id}>
-                <span className="flex-1">
+                <span className="flex flex-1">
                   <Link
                     to={`/products/${items.id}/edit`}
                     className="btn btn-default"
