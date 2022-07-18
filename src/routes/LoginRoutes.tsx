@@ -1,13 +1,12 @@
-import React from 'react';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
-import { LogIn } from '../pages/Login';
+import { SingIn } from '../pages/SingIn/SingIn';
 
-export const LoginRoutes: React.FC = () => {
+export function LoginRoutes() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="*" element={<LogIn />} />
+        <Route path="*" element={<SingIn />} />
       </Routes>
     </BrowserRouter>
   );
-};
+}

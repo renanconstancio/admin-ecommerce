@@ -1,11 +1,10 @@
-import React from 'react';
 import { HelmetProvider } from 'react-helmet-async';
 import { ToastContainer } from 'react-toastify';
 import { AuthRoutes } from './routes/AuthRoutes';
 import { LoginRoutes } from './routes/LoginRoutes';
 import { useAuth } from './hooks/useAuth';
 
-export const App: React.FC = () => {
+export default function App() {
   const { signed } = useAuth();
 
   return (
@@ -14,4 +13,4 @@ export const App: React.FC = () => {
       <ToastContainer />
     </HelmetProvider>
   );
-};
+}

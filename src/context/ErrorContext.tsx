@@ -8,16 +8,20 @@ export interface IError {
   message: string;
 }
 
-export interface ErrorContextData {
+export interface IErrorContextData {
   error: IError;
   setError: (data: IError) => void;
 }
 
-export const ErrorContext = createContext<ErrorContextData>(
-  {} as ErrorContextData,
+export const ErrorContext = createContext<IErrorContextData>(
+  {} as IErrorContextData,
 );
 
-export const ErrorProvider: React.FC = ({ children }) => {
+interface IErrorProvider {
+  children: React.ReactNode;
+}
+
+export function ErrorProvider({ children }: IErrorProvider) {
   const errorContext = useError();
 
   return (
@@ -25,4 +29,4 @@ export const ErrorProvider: React.FC = ({ children }) => {
       {children}
     </ErrorContext.Provider>
   );
-};
+}

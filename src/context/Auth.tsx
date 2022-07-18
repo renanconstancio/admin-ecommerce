@@ -10,12 +10,16 @@ interface IAuthContextData {
 
 const AuthContext = createContext<IAuthContextData>({} as IAuthContextData);
 
-export const AuthProvider: React.FC = ({ children }) => {
+interface IAuthProvider {
+  children: React.ReactNode;
+}
+
+export function AuthProvider({ children }: IAuthProvider) {
   const [user, setUser] = useState<object | null>(null);
 
   useEffect(() => {
-    const storagedUser = sessionStorage.getItem('@App:user');
-    const storagedToken = sessionStorage.getItem('@App:token');
+    const storagedUser = sessionStorage.getItem('@app:user');
+    const storagedToken = sessionStorage.getItem('@app:token');
 
     if (storagedToken && storagedUser) {
       setUser(JSON.parse(storagedUser));
@@ -31,8 +35,8 @@ export const AuthProvider: React.FC = ({ children }) => {
 
         api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
 
-        sessionStorage.setItem('@App:user', JSON.stringify(customer));
-        sessionStorage.setItem('@App:token', token);
+        sessionStorage.setItem('@app:user', JSON.stringify(customer));
+        sessionStorage.setItem('@app:token', token);
 
         setUser(customer);
         login(token);
@@ -44,9 +48,9 @@ export const AuthProvider: React.FC = ({ children }) => {
   };
 
   const logout = () => {
+    sessionStorage.removeItem('@app:user');
+    sessionStorage.removeItem('app:token');
     setUser(null);
-    sessionStorage.removeItem('@App:user');
-    sessionStorage.removeItem('App:token');
   };
 
   return (
@@ -56,6 +60,6 @@ export const AuthProvider: React.FC = ({ children }) => {
       {children}
     </AuthContext.Provider>
   );
-};
+}
 
 export default AuthContext;

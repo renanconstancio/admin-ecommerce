@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import { Link, useParams, useNavigate, useLocation } from 'react-router-dom';
-
 import { useForm, SubmitHandler, useFieldArray } from 'react-hook-form';
 import { Loading } from '../../components/Loading';
 import { IProduct, IProducts } from '../../types/Product';
@@ -9,7 +8,7 @@ import { IProductSku } from '../../types/ProductSku';
 import { Helmet } from 'react-helmet-async';
 import { api } from '../../api/api';
 
-export const ProductImagesForm: React.FC = () => {
+export function ProductImagesForm() {
   const { id: productId, idsku: productSkuId } =
     useParams<{ [key: string]: '' }>();
 
@@ -208,4 +207,4 @@ export const ProductImagesForm: React.FC = () => {
       </Helmet>
     </div>
   );
-};
+}

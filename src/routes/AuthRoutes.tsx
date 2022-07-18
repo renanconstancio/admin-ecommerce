@@ -1,4 +1,3 @@
-import React from 'react';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { Menu } from '../components/Menu';
 import { Content } from '../components/Content';
@@ -10,7 +9,7 @@ import { ProductsForm } from '../pages/Products/ProductsForm';
 import { ProductSkusForm } from '../pages/Products/ProductSkusForm';
 import { ProductImagesForm } from '../pages/Products/ProductImagesForm';
 
-export const AuthRoutes: React.FC = () => {
+export function AuthRoutes() {
   return (
     <BrowserRouter>
       <Menu />
@@ -39,4 +38,4 @@ export const AuthRoutes: React.FC = () => {
       </Routes>
     </BrowserRouter>
   );
-};
+}

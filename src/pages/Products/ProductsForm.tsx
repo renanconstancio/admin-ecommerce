@@ -8,7 +8,7 @@ import { toast } from 'react-toastify';
 import { Helmet } from 'react-helmet-async';
 import { api } from '../../api/api';
 
-export const ProductsForm: React.FC = () => {
+export function ProductsForm() {
   const { id: productId } = useParams<{ [key: string]: '' }>();
 
   const { pathname } = useLocation();
@@ -230,4 +230,4 @@ export const ProductsForm: React.FC = () => {
       </Helmet>
     </div>
   );
-};
+}

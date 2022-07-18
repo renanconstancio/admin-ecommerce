@@ -8,7 +8,7 @@ import { toast } from 'react-toastify';
 import { api } from '../../api/api';
 import { Helmet } from 'react-helmet-async';
 
-export const Categories: React.FC = () => {
+export function Categories() {
   const location = useLocation();
 
   const qParams = new URLSearchParams(location.search);
@@ -49,7 +49,7 @@ export const Categories: React.FC = () => {
     loadList('', limit, page);
   }, [limit, page]);
 
-  const resolveDelete = async (item: ICategory) => {
+  async function resolveDelete(item: ICategory) {
     if (!confirm(`Deseja realmente excluir ${item.name}!`)) return;
 
     toast.promise(
@@ -62,7 +62,7 @@ export const Categories: React.FC = () => {
         error: 'Algo deu errado, tente novamente!',
       },
     );
-  };
+  }
 
   return (
     <div className="content">
@@ -139,4 +139,4 @@ export const Categories: React.FC = () => {
       </Helmet>
     </div>
   );
-};
+}

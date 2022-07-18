@@ -8,7 +8,7 @@ import { Pagination } from '../../components/Pagination';
 import { Helmet } from 'react-helmet-async';
 import { api } from '../../api/api';
 
-export const Products: React.FC = () => {
+export function Products() {
   const location = useLocation();
 
   const queryParams = new URLSearchParams(location.search);
@@ -142,4 +142,4 @@ export const Products: React.FC = () => {
       </Helmet>
     </div>
   );
-};
+}

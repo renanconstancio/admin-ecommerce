@@ -14,7 +14,7 @@ import { IProductSku } from '../../types/ProductSku';
 import { Helmet } from 'react-helmet-async';
 import { api } from '../../api/api';
 
-export const ProductSkusForm: React.FC = () => {
+export function ProductSkusForm() {
   const { id: productId } = useParams<{ [key: string]: '' }>();
 
   const { pathname } = useLocation();
@@ -287,4 +287,4 @@ export const ProductSkusForm: React.FC = () => {
       </Helmet>
     </div>
   );
-};
+}
