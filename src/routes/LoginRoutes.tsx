@@ -1,5 +1,5 @@
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
-import { SingIn } from '../pages/SingIn/SingIn';
+import { SingIn } from '../pages/SingIn';
 
 export function LoginRoutes() {
   return (

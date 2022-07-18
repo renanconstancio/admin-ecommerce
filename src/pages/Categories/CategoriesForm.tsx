@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { Link, useParams, useNavigate, useLocation } from 'react-router-dom';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { ICategory, ICategories } from '../../types/Category';
@@ -29,66 +29,43 @@ export function CategoriesForm() {
     error: '',
   });
 
+  const fetchApi = useCallback(async (categoryId: string) => {
+    await api.get(`/categories/${categoryId}`).then(async ({ data }) => {
+      fetch({
+        error: '',
+        category: await data,
+        loading: false,
+      });
+      reset(await data);
+    });
+  }, []);
+
   useEffect(() => {
-    (async () => {
-      if (categoryId) {
-        await api.get(`/categories/${categoryId}`).then(async resp =>
-          fetch({
-            category: await resp.data,
-            error: '',
-            loading,
-          }),
-        );
-      }
-    })();
-  }, [fetch, categoryId]);
+    if (categoryId) fetchApi(categoryId);
+  }, [categoryId]);
 
   useEffect(() => {
     const url = pathname.split('/');
-    if (category.id) {
-      reset(category);
-      if (url[url.length - 1] === 'new') {
-        navigate(`/categories/${category.id}/edit`);
-      }
+    if (category.id && url[url.length - 1] === 'new') {
+      navigate(`/categories/${category.id}/edit`);
     }
   }, [category]);
 
   const onSubmit: SubmitHandler<ICategory> = async data => {
-    let promiseCategory;
-
     const { description, keywords, name, position } = data;
+    const newData = { description, keywords, name, position: Number(position) };
 
-    if (data.id) {
-      promiseCategory = api
-        .put(`/categories/${categoryId}`, {
-          description,
-          keywords,
-          name,
-          position: Number(position),
-        })
-        .then(async res =>
-          fetch({
-            category: await res.data,
-            loading,
-            error: '',
-          }),
-        );
-    } else {
-      promiseCategory = api
-        .post(`/categories`, {
-          description,
-          keywords,
-          name,
-          position: Number(position),
-        })
-        .then(async res =>
-          fetch({
-            category: await res.data,
-            loading,
-            error: '',
-          }),
-        );
-    }
+    const promiseCategory = (async () => {
+      if (data.id) {
+        await api
+          .put(`/categories/${categoryId}`, newData)
+          .then(async ({ data }) => fetchApi(data.id));
+      } else {
+        await api
+          .post(`/categories`, newData)
+          .then(async ({ data }) => fetchApi(data.id));
+      }
+    })();
 
     toast.promise(promiseCategory, {
       pending: 'Um momento por favor...',

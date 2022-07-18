@@ -18,6 +18,7 @@ export function Products() {
     : 25;
 
   const [query, setQuery] = useState<string>('');
+
   const [{ data, loading, total }, fetch] = useState<IPagination<IProduct>>(
     {} as IPagination<IProduct>,
   );
@@ -26,9 +27,9 @@ export function Products() {
     async (query, limit, page) => {
       await api
         .get(`/products?products[name]=${query}&limit=${limit}&page=${page}`)
-        .then(async resp =>
+        .then(async ({ data }) =>
           fetch({
-            ...(await resp.data),
+            ...(await data),
             loading: true,
             error: '',
           }),

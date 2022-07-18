@@ -24,12 +24,55 @@ body {
   overflow-x: hidden;
   font-family: 'Poppins', sans-serif;
 }
-// mysql://be36541c8c933b:6e5c824a@us-cdbr-east-05.cleardb.net/heroku_2c6115001ba40a2?reconnect=true
+
+.text {
+  &-center {
+    text-align: center;
+  }
+
+  &-end {
+    text-align: end;
+  }
+
+  &-start {
+    text-align: start;
+  }
+}
+
+.aling {
+  &-items-center {
+    align-items: center;
+  }
+  &-items-end {
+    align-items: flex-end;
+  }
+  &-items-start {
+    align-items: flex-start;
+  }
+}
+
+.justify {
+  &-content-center {
+    justify-content: center;
+  }
+  &-items-end {
+    justify-content: end;
+  }
+  &-items-start {
+    justify-content: start;
+  }
+  &-items-between {
+    justify-content: between;
+  }
+}
 
 .flex {
   display: flex;
-  flex-direction: row;
-  justify-content: space-between;
+
+  &-wrap {
+    flex-wrap: wrap;
+  }
+
   &-1 {
     flex: 0 1 8.33%;
   }

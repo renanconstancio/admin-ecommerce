@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { Link, useParams, useNavigate, useLocation } from 'react-router-dom';
 
 import {
@@ -32,7 +32,7 @@ export function ProductSkusForm() {
     mode: 'onChange',
   });
 
-  const { fields, append, prepend, remove, swap, move, insert } = useFieldArray(
+  const { fields, append, remove, prepend, swap, move, insert } = useFieldArray(
     {
       control,
       name: 'skus',
@@ -42,31 +42,29 @@ export function ProductSkusForm() {
 
   const [{ product, loading }, fetch] = useState<IProducts<IProduct>>({
     product: {} as IProduct,
-    loading: false,
+    loading: true,
     error: '',
   });
 
+  const fetchApi = useCallback(async (productId: string) => {
+    await api.get(`/products/${productId}/skus`).then(async ({ data }) => {
+      fetch({
+        product: await data,
+        loading: false,
+        error: '',
+      });
+      reset(await data);
+    });
+  }, []);
+
   useEffect(() => {
-    (async () => {
-      if (productId) {
-        await api.get(`/products/${productId}`).then(async resp =>
-          fetch({
-            product: await resp.data,
-            error: '',
-            loading,
-          }),
-        );
-      }
-    })();
-  }, [fetch, productId]);
+    if (productId) fetchApi(productId);
+  }, [productId]);
 
   useEffect(() => {
     const url = pathname.split('/');
-    if (product.id) {
-      reset(product);
-      if (url[url.length - 1] === 'new') {
-        navigate(`/products/${product.id}/skus`);
-      }
+    if (product.id && url[url.length - 1] === 'new') {
+      navigate(`/products/${product.id}/skus`);
     }
   }, [product]);
 
@@ -84,24 +82,22 @@ export function ProductSkusForm() {
         sale_price,
         sku,
       } of skusList) {
+        const newData = {
+          price,
+          cost_price,
+          sale_price,
+          quantity,
+          sku,
+        };
+
         if (product_id && id) {
-          await api.put(`/products/${product_id}/skus/${id}`, {
-            price,
-            cost_price,
-            sale_price,
-            quantity,
-            sku,
-          });
+          await api.put(`/products/${product_id}/skus/${id}`, newData);
         } else {
-          await api.post(`/products/${product.id}/skus`, {
-            price,
-            cost_price,
-            sale_price,
-            quantity,
-            sku,
-          });
+          await api.post(`/products/${productId}/skus`, newData);
         }
       }
+
+      if (productId) await fetchApi(productId);
     })();
 
     toast.promise(promiseProduct, {
@@ -162,28 +158,19 @@ export function ProductSkusForm() {
           </div>
           <form
             onSubmit={handleSubmit(onSubmit)}
-            className="form-style form-product-skus"
+            className="form-style"
             id="products-skus"
           >
             {fields.map((field, index) => (
               <ul
-                className="flex flex-12"
+                className="flex flex-12 flex-wrap aling-items-end"
                 key={field._id}
                 style={{
-                  justifyContent: 'flex-start',
-                  alignItems: 'center',
-                  flexWrap: 'wrap',
                   borderBottom: 'solid 1px #f1f1f1',
                   padding: '0 0 16px 0',
                 }}
               >
                 <li style={{ marginRight: 16 }}>
-                  {/* <Link
-                    to={`/products/${product.id}/skus`}
-                    className="btn btn-danger"
-                  >
-                    <i className="fa-solid fa-trash"></i>
-                  </Link> */}
                   <span
                     onClick={() => resolveDelete(field)}
                     className="btn btn-danger"

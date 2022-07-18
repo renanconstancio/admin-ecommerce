@@ -21,7 +21,7 @@ export function Categories() {
     {} as IPagination<ICategory>,
   );
 
-  const loadList = useCallback(
+  const fetchApi = useCallback(
     async (query, limit, page) => {
       await api
         .get(
@@ -46,7 +46,7 @@ export function Categories() {
   );
 
   useEffect(() => {
-    loadList('', limit, page);
+    fetchApi('', limit, page);
   }, [limit, page]);
 
   async function resolveDelete(item: ICategory) {
@@ -54,7 +54,7 @@ export function Categories() {
 
     toast.promise(
       api.delete(`/categories/${item.id}`).then(() => {
-        loadList('', limit, page);
+        fetchApi('', limit, page);
       }),
       {
         pending: 'Um momento por favor...',
@@ -87,7 +87,7 @@ export function Categories() {
                 <button
                   className="btn"
                   style={{ borderRadius: 6, marginLeft: 6 }}
-                  onClick={() => loadList(query, limit, page)}
+                  onClick={() => fetchApi(query, limit, page)}
                 >
                   <i className="fa fa-search"></i>
                 </button>

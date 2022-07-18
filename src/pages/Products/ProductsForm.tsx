@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { Link, useParams, useNavigate, useLocation } from 'react-router-dom';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { Loading } from '../../components/Loading';
@@ -15,6 +15,8 @@ export function ProductsForm() {
 
   const navigate = useNavigate();
 
+  const editorRef = useRef<any>(null);
+
   const {
     reset,
     register,
@@ -27,72 +29,54 @@ export function ProductsForm() {
 
   const [{ product, loading }, fetch] = useState<IProducts<IProduct>>({
     product: {} as IProduct,
-    loading: false,
+    loading: true,
     error: '',
   });
 
+  const fetchApi = useCallback(async (productId: string) => {
+    await api.get(`/products/${productId}`).then(async ({ data }) => {
+      fetch({
+        error: '',
+        product: await data,
+        loading: false,
+      });
+      reset(await data);
+    });
+  }, []);
+
   useEffect(() => {
-    (async () => {
-      if (productId) {
-        await api.get(`/products/${productId}`).then(async resp =>
-          fetch({
-            product: await resp.data,
-            error: '',
-            loading,
-          }),
-        );
-      }
-    })();
-  }, [fetch, productId]);
+    if (productId) fetchApi(productId);
+  }, [productId]);
 
   useEffect(() => {
     const url = pathname.split('/');
-    if (product.id) {
-      reset(product);
-      if (url[url.length - 1] === 'new') {
-        navigate(`/products/${product.id}/edit`);
-      }
+    if (product.id && url[url.length - 1] === 'new') {
+      navigate(`/products/${product.id}/edit`);
     }
   }, [product]);
 
   const onSubmit: SubmitHandler<IProduct> = async data => {
-    let promiseProduct;
+    const { name, description, keywords, visible } = data;
 
-    const { description, name, description_text, keywords, visible } = data;
+    const newData = {
+      name,
+      visible,
+      keywords,
+      description,
+      description_text: editorRef.current ? editorRef.current.getContent() : '',
+    };
 
-    if (data.id) {
-      promiseProduct = api
-        .put(`/products/${productId}`, {
-          description,
-          name,
-          description_text,
-          keywords,
-          visible,
-        })
-        .then(async res =>
-          fetch({
-            product: await res.data,
-            loading,
-            error: '',
-          }),
-        );
-    } else {
-      promiseProduct = api
-        .post(`/products`, {
-          description,
-          name,
-          description_text,
-          keywords,
-          visible,
-        })
-        .then(async res =>
-          fetch({
-            product: await res.data,
-            loading,
-            error: '',
-          }),
-        );
-    }
+    const promiseProduct = (async () => {
+      if (data.id) {
+        await api
+          .put(`/products/${productId}`, newData)
+          .then(async ({ data }) => fetchApi(data.id));
+      } else {
+        await api
+          .post(`/products`, newData)
+          .then(async ({ data }) => fetchApi(data.id));
+      }
+    })();
 
     toast.promise(promiseProduct, {
       pending: 'Um momento por favor...',
@@ -103,19 +87,13 @@ export function ProductsForm() {
 
   return (
     <div className="content">
-      {loading ? (
+      {loading && !product ? (
         <Loading />
       ) : (
         <>
           <div className="help-buttons-flex">
             <h1>{product?.name}</h1>
             <span>
-              {/* <Link
-                to={`/products/${product.id}/photos`}
-                className="btn btn-default"
-              >
-                Fotos <i className="fa-solid fa-photo-film"></i>
-              </Link> */}
               <Link to="/products" className="btn btn-default">
                 voltar <i className="fa-solid fa-undo"></i>
               </Link>
@@ -155,10 +133,6 @@ export function ProductsForm() {
                 <option value="invisible">Não</option>
                 <option value="visible">Sim</option>
               </select>
-              {/* <input
-                type="text"
-                {...register('visible', { required: 'Campo obrigatório!' })}
-              /> */}
               <small>{errors.visible && errors.visible.message}</small>
             </div>
             <div className="form-input flex-7">
@@ -183,11 +157,9 @@ export function ProductsForm() {
             <div className="form-input flex-12">
               <label htmlFor="description_text">Descrição</label>
               <Editor
+                onInit={(evt, editor) => (editorRef.current = editor)}
                 apiKey={`${import.meta.env.VITE_KEY_TINYMCE}`}
                 initialValue={product.description_text}
-                {...register('description_text', {
-                  required: false,
-                })}
                 init={{
                   height: 400,
                   menubar: false,
@@ -220,7 +192,7 @@ export function ProductsForm() {
                     'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }',
                 }}
               />
-              <small>{errors.description && 'Campo obrigatório!'}</small>
+              <small>{errors.description_text && 'Campo obrigatório!'}</small>
             </div>
           </form>
         </>
