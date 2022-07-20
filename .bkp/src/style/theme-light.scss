@@ -1,0 +1,15 @@
+:root {
+  --default: #eee;
+
+  --hex-1: #562155;
+  --hex-2: #72577c;
+  --hex-3: #8e8ca3;
+  --hex-4: #a9c2c9;
+  --hex-5: #c5f7f0;
+
+  --primary: var(--hex-2); // #3685b5;
+  --success: var(--hex-1); // #58ce74;
+  --warning: var(--hex-3); // #e9e521;
+  --danger: var(--hex-4); // #fa5249;
+  --info: var(--hex-5); // #8ec2f3;
+}

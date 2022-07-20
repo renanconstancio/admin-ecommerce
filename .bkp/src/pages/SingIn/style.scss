@@ -1,0 +1,15 @@
+.form-login {
+  width: 100%;
+  height: 100vh;
+  background-color: var(--hex-1);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  > div {
+    max-width: 420px;
+    color: #fff;
+    background-color: var(--hex-1);
+    padding: 16px;
+    border-radius: 12px;
+  }
+}
