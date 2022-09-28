@@ -163,7 +163,7 @@ export function ProductSkusForm() {
           >
             {fields.map((field, index) => (
               <ul
-                className="flex flex-12 flex-wrap aling-items-end"
+                className="flex flex-12 flex-wrap aling-end"
                 key={field._id}
                 style={{
                   borderBottom: 'solid 1px #f1f1f1',

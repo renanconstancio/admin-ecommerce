@@ -14,7 +14,7 @@ interface IAuthProvider {
   children: React.ReactNode;
 }
 
-export function AuthProvider({ children }: IAuthProvider) {
+function AuthProvider({ children }: IAuthProvider) {
   const [user, setUser] = useState<object | null>(null);
 
   useEffect(() => {
@@ -62,4 +62,5 @@ export function AuthProvider({ children }: IAuthProvider) {
   );
 }
 
+export { AuthProvider };
 export default AuthContext;

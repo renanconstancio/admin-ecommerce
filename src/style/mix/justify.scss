@@ -1,0 +1,14 @@
+.justify {
+  &-center {
+    justify-content: center;
+  }
+  &-end {
+    justify-content: end;
+  }
+  &-start {
+    justify-content: start;
+  }
+  &-between {
+    justify-content: between;
+  }
+}

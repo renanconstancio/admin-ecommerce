@@ -1,5 +1,7 @@
 import axios from 'axios';
 
+const URI_BASE = import.meta.env.VITE_BASE_URL || 'http://localhost:8000';
+
 export const defaults = {
   headers: {
     Authorization: '',
@@ -7,7 +9,7 @@ export const defaults = {
 };
 
 export const api = axios.create({
-  baseURL: 'http://localhost:8000',
+  baseURL: `${URI_BASE}`,
 });
 
 // api.interceptors.request.use(async config => {

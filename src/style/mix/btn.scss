@@ -1,0 +1,66 @@
+.btn {
+  font-size: 14px;
+  padding: 6px 12px;
+  margin-bottom: 0;
+  display: inline-block;
+  text-decoration: none;
+  text-transform: uppercase;
+  font-weight: bold;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: middle;
+  -ms-touch-action: manipulation;
+  touch-action: manipulation;
+  cursor: pointer;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  background-image: none;
+  border: 1px solid transparent;
+  border-radius: 16px;
+  + .btn {
+    margin-left: 6px;
+  }
+  /* default
+---------------------------- */
+  &.btn-default {
+    color: #333;
+    background-color: var(--default);
+  }
+
+  &.btn-primary {
+    color: #fff;
+    background-color: var(--primary);
+  }
+
+  &.btn-success {
+    color: #fff;
+    background-color: var(--success);
+  }
+
+  &.btn-warning {
+    color: #fff;
+    background-color: var(--warning);
+  }
+
+  &.btn-danger {
+    color: #fff;
+    background-color: var(--danger);
+  }
+
+  &.btn-info {
+    color: #fff;
+    background-color: var(--info);
+  }
+
+  &:disabled {
+    cursor: progress;
+  }
+
+  &:focus,
+  &:hover,
+  &:active {
+    opacity: 0.7;
+  }
+}

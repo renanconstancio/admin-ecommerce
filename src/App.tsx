@@ -9,7 +9,7 @@ export default function App() {
 
   return (
     <HelmetProvider>
-      {!signed ? <LoginRoutes /> : <AuthRoutes />}
+      {signed ? <LoginRoutes /> : <AuthRoutes />}
       <ToastContainer />
     </HelmetProvider>
   );
