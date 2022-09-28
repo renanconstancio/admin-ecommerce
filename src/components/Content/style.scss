@@ -1,22 +1,24 @@
+@import '../../style/function/calculate-size.scss';
+
 section {
   &.content {
-    width: calc(100% - 300px);
+    width: calc(100% - #{calculate-size(265)});
     height: 100%;
-    margin-left: 300px;
+    margin-left: #{calculate-size(265)};
     background-color: #f1f1f1;
     transition: 0.5s;
-    padding: 16px 32px;
+    padding: var(--size-3) var(--size-5);
     position: fixed;
     top: 0;
     overflow-y: auto;
     .content {
-      padding: 16px;
+      padding: var(--size-3);
       background-color: #fff;
-      border-radius: 16px;
+      border-radius: var(--size-3);
     }
     /* width */
     &::-webkit-scrollbar {
-      width: 12px;
+      width: #{calculate-size(12)};
     }
 
     /* Track */
@@ -26,7 +28,7 @@ section {
 
     /* Handle */
     &::-webkit-scrollbar-thumb {
-      border-radius: 6px;
+      border-radius: var(--radius-1);
       background: #888;
     }
 

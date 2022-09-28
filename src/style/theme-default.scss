@@ -12,4 +12,19 @@
   --warning: #e9e521;
   --danger: #fa5249;
   --info: #a2c9ee;
+
+  --size-1: #{calculate-size(6)};
+  --size-2: #{calculate-size(12)};
+  --size-3: #{calculate-size(18)};
+  --size-4: #{calculate-size(24)};
+  --size-5: #{calculate-size(30)};
+  --size-6: #{calculate-size(36)};
+  --size-7: #{calculate-size(42)};
+  --size-8: #{calculate-size(48)};
+  --size-9: #{calculate-size(54)};
+  --size-10: #{calculate-size(60)};
+
+  --radius-1: #{calculate-size(6)};
+  --radius-2: #{calculate-size(12)};
+  --radius-3: #{calculate-size(18)};
 }

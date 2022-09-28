@@ -12,4 +12,15 @@
   --warning: var(--hex-3); // #e9e521;
   --danger: var(--hex-4); // #fa5249;
   --info: var(--hex-5); // #8ec2f3;
+
+  --size-6: #{calculate-size(6)};
+  --size-12: #{calculate-size(12)};
+  --size-18: #{calculate-size(18)};
+  --size-24: #{calculate-size(24)};
+  --size-30: #{calculate-size(30)};
+  --size-36: #{calculate-size(36)};
+  --size-42: #{calculate-size(42)};
+  --size-48: #{calculate-size(48)};
+  --size-54: #{calculate-size(54)};
+  --size-60: #{calculate-size(60)};
 }

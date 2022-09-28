@@ -1,0 +1,28 @@
+.justify {
+  &-center {
+    justify-content: center;
+  }
+  &-end {
+    justify-content: end;
+  }
+  &-start {
+    justify-content: start;
+  }
+  &-between {
+    justify-content: between;
+  }
+  @media (max-width: 767px) {
+    &-xs-center {
+      justify-content: center;
+    }
+    &-xs-end {
+      justify-content: end;
+    }
+    &-xs-start {
+      justify-content: start;
+    }
+    &-xs-between {
+      justify-content: between;
+    }
+  }
+}

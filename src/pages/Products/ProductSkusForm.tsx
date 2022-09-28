@@ -14,6 +14,8 @@ import { IProductSku } from '../../types/ProductSku';
 import { Helmet } from 'react-helmet-async';
 import { api } from '../../api/api';
 
+import { Input } from '../../components/Input';
+
 export function ProductSkusForm() {
   const { id: productId } = useParams<{ [key: string]: '' }>();
 
@@ -32,13 +34,11 @@ export function ProductSkusForm() {
     mode: 'onChange',
   });
 
-  const { fields, append, remove, prepend, swap, move, insert } = useFieldArray(
-    {
-      control,
-      name: 'skus',
-      keyName: '_id',
-    },
-  );
+  const { fields, append, remove } = useFieldArray({
+    control,
+    name: 'skus',
+    keyName: '_id',
+  });
 
   const [{ product, loading }, fetch] = useState<IProducts<IProduct>>({
     product: {} as IProduct,
@@ -162,15 +162,15 @@ export function ProductSkusForm() {
             id="products-skus"
           >
             {fields.map((field, index) => (
-              <ul
-                className="flex flex-12 flex-wrap aling-end"
+              <div
+                className="flex flex-4 flex-xs-12 flex-wrap aling-end"
                 key={field._id}
                 style={{
                   borderBottom: 'solid 1px #f1f1f1',
                   padding: '0 0 16px 0',
                 }}
               >
-                <li style={{ marginRight: 16 }}>
+                <div className="flex-12">
                   <span
                     onClick={() => resolveDelete(field)}
                     className="btn btn-danger"
@@ -183,8 +183,8 @@ export function ProductSkusForm() {
                   >
                     <i className="fa-solid fa-photo-film"></i>
                   </Link>
-                </li>
-                <li className="form-input flex-1">
+                </div>
+                <div className="form-input flex-1-1">
                   <label htmlFor="sku">SKU *</label>
                   <input
                     type="text"
@@ -197,8 +197,8 @@ export function ProductSkusForm() {
                   <small>
                     {errors.skus && errors.skus?.[index]?.sku?.message}
                   </small>
-                </li>
-                <li className="form-input flex-1">
+                </div>
+                <div className="form-input flex-1">
                   <label htmlFor="sku">Preço Custo *</label>
                   <Controller
                     control={control}
@@ -217,11 +217,11 @@ export function ProductSkusForm() {
                   <small>
                     {errors.skus && errors.skus?.[index]?.cost_price?.message}
                   </small>
-                </li>
-                <li className="form-input flex-1">
+                </div>
+                <div className="form-input flex-1">
                   <label htmlFor="sku">Preço Venda *</label>
                   <input
-                    type="text"
+                    type="tel"
                     id={`${field._id}-sale`}
                     className={
                       errors.skus?.[index]?.sale_price && 'input-invalid'
@@ -233,11 +233,11 @@ export function ProductSkusForm() {
                   <small>
                     {errors.skus && errors.skus?.[index]?.sale_price?.message}
                   </small>
-                </li>
-                <li className="form-input flex-1">
+                </div>
+                <div className="form-input flex-1">
                   <label htmlFor="sku">Preço *</label>
                   <input
-                    type="text"
+                    type="tel"
                     id={`${field._id}-price`}
                     className={errors.skus?.[index]?.price && 'input-invalid'}
                     {...register(`skus.${index}.price`, {
@@ -247,8 +247,24 @@ export function ProductSkusForm() {
                   <small>
                     {errors.skus && errors.skus?.[index]?.price?.message}
                   </small>
-                </li>
-                <li className="form-input flex-1">
+                </div>
+
+                {/* <Input
+                  label="Estoque *"
+                  id={`${field._id}-quantity`}
+                  className={`flex-1 ${
+                    errors.skus?.[index]?.quantity && 'input-invalid'
+                  }`}
+                  {...register(`skus.${index}.quantity`, {
+                    required: 'Campo obrigatório!',
+                  })}
+                >
+                  <small>
+                    {errors.skus && errors.skus?.[index]?.quantity?.message}
+                  </small>
+                </Input> */}
+
+                <div className="form-input flex-1">
                   <label htmlFor="sku">Estoque *</label>
                   <input
                     type="text"
@@ -263,8 +279,8 @@ export function ProductSkusForm() {
                   <small>
                     {errors.skus && errors.skus?.[index]?.quantity?.message}
                   </small>
-                </li>
-              </ul>
+                </div>
+              </div>
             ))}
           </form>
         </>

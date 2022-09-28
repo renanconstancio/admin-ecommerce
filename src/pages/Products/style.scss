@@ -1,19 +1,13 @@
-// .form-customer {
-//   padding: 16px;
-//   border-radius: 16px;
-//   background-color: #fff;
-// }
-
 .form-product-images {
   > ul {
     > li {
       position: relative;
       overflow: hidden;
-      width: 175px;
-      height: 175px;
+      width: #{calculate-size(175)};
+      height: #{calculate-size(175)};
       border: solid 1px #dedede;
-      margin: 6px;
-      border-radius: 6px;
+      margin: var(--size-1);
+      border-radius: var(--radius-1);
       > img {
         position: absolute;
         width: 100%;

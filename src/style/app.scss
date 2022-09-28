@@ -1,4 +1,7 @@
 $fa-font-path: './fontawesome-6.0.0/webfonts';
+
+@import './function/calculate-size.scss';
+
 @import './fontawesome-6.0.0/scss/fontawesome.scss';
 @import './fontawesome-6.0.0/scss/solid.scss';
 @import './fontawesome-6.0.0/scss/brands.scss';
@@ -6,11 +9,11 @@ $fa-font-path: './fontawesome-6.0.0/webfonts';
 // @import './theme-light.scss';
 // @import './theme-dark.scss';
 
-@import './mix/btn.scss';
-@import './mix/text.scss';
-@import './mix/align.scss';
-@import './mix/flex.scss';
-@import './mix/justify.scss';
+@import './mixing/btn.scss';
+@import './mixing/text.scss';
+@import './mixing/align.scss';
+@import './mixing/flex.scss';
+@import './mixing/justify.scss';
 
 *,
 ::after,
@@ -31,8 +34,11 @@ body {
   font-family: 'Poppins', sans-serif;
 }
 
+// 1px = 0.063rem
+
 .ul-content-list {
-  margin: 16px 0 32px;
+  margin-top: var(--size-3);
+  margin-bottom: var(--size-5);
   > * {
     &:nth-child(1) {
       font-weight: bold;
@@ -45,7 +51,7 @@ body {
     justify-content: space-between;
     flex-direction: row;
     align-items: center;
-    padding: 8px;
+    padding: var(--size-2);
   }
 }
 
@@ -56,7 +62,7 @@ body {
   align-items: flex-start;
   flex-wrap: wrap;
   border-bottom: solid 1px #f1f1f1;
-  padding-bottom: 16px;
+  padding-bottom: var(--size-5);
 }
 
 .form-style {
@@ -67,8 +73,8 @@ body {
   .form-input {
     display: flex;
     flex-direction: column;
-    margin-right: 16px;
-    margin-top: 18px;
+    margin-top: var(--size-3);
+    margin-right: var(--size-2);
 
     &.mr-clear {
       margin-right: 0;
@@ -91,7 +97,7 @@ body {
     // }
 
     label {
-      margin-bottom: 3px;
+      margin-bottom: var(--size-1);
       font-weight: bold;
     }
 
@@ -100,9 +106,10 @@ body {
     textarea {
       outline: none;
       border: solid 1px var(--hex-1);
-      border-radius: 6px;
-      padding: 0 12px;
-      min-height: 36px;
+      border-radius: var(--radius-2);
+      padding-left: var(--size-2);
+      padding-right: var(--size-2);
+      min-height: var(--size-8);
       &:focus {
         border-color: #8c8c8c;
       }
